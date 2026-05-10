@@ -156,12 +156,12 @@
 
 			<div id="hud" class="hud">
 				<div class="player1-hud"> <!-- Health Container-->
-					<div class="player1-health"></div>
+					<div class="player1-health" id="player1-health"></div>
 					<p class="player1-name">Elon Musk</p>
 				</div>
 
 				<div class="player2-hud"> <!-- Health Container-->
-					<div class="player2-health"></div>
+					<div class="player2-health" id="player2-health"></div>
 					<p class="player2-name">Sam Altman</p>
 				</div>
 			</div>
@@ -201,6 +201,7 @@
 					this.isAI = isAI;
 					this.name = name;
 					this.health = health;
+					this.maxHealth = health;
 					this.attack = attack;
 					this.speed = speed;
 					this.jump_power = jump_power;
@@ -349,8 +350,18 @@
 				player1.update();
 				player2.update();
 
+				//player1.health--; // TEMP DAMAGE
+
+				updateHealthBar('player1', player1);
+				updateHealthBar('player2', player2);
+
 				render();
 				requestAnimationFrame(gameLoop);
+			}
+
+			function updateHealthBar(player, character) {
+				const healtPercent = (character.health / character.maxHealth) * 100;
+				document.getElementById(`${player}-health`).style.width = `${healtPercent}%`;
 			}
 
 			// Render
