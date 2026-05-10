@@ -241,21 +241,23 @@
 						health: 100,
 						attack: 20,
 						speed: 4,
-						jump_power: 8
+						jump_power: 10,
+						attack_range: 20,
 					},
 					sam: {
 						name: 'Sam Altman',
 						health: 100,
 						attack: 15,
-						speed: 6,
-						jump_power: 5
+						speed: 8,
+						jump_power: 12,
+						attack_range: 15,
 					}
 				}
 			}
 
 			// Character Class
 			class Character {
-				constructor(isAI, name, health, attack, speed, jump_power) {
+				constructor(isAI, name, health, attack, speed, jump_power, attack_range) {
 					this.isAI = isAI;
 					this.name = name;
 					this.health = health;
@@ -263,26 +265,134 @@
 					this.attack = attack;
 					this.speed = speed;
 					this.jump_power = jump_power;
+					this.attack_range = attack_range;
 
 					this.x = 0;
 					this.y = 0;
-					this.width = 5;
-					this.height = 5;
+					this.width = window.innerWidth * 0.2;
+					this.height = window.innerHeight * 0.4;
 
 					this.velX = 0;
 					this.velY = 0;
 
 					this.isJumping = false;
+					this.isAttacking = false;
+					this.attackCooldown = 0;
+					this.attackAnimationTime = 0;
+					this.hitStunTime = 0;
+					this.facingRight = true;
+
+
+					// Sprites
+					this.spriteSheet = null;
+					this.currentAnimation = 'idle';
+					this.currentFrame = 0;
+					this.frameTimer = 0;
+					this.frameDelay = 5;
+
+					this.animations = {
+						idle: { row: 0, frames: 8, loop: true },
+						walk: { row: 1, frames: 8, loop: true },
+						jump: { row: 2, frames: 8, loop: false },
+						attack: { row: 3, frames: 12, loop: false },
+					};
+					
+					this.spriteWidth = 256;
+					this.spriteHeight = 256;
+
+					this.spriteSheet = new Image();
+					this.spriteSheet.src = `assets/${this.name.toLowerCase().replace(' ', '')}.png`;
+				}
+				
+				setAnimation(animationName) {
+					// Only change if it's a different animation
+					if (this.currentAnimation !== animationName && this.animations[animationName]) {
+						this.currentAnimation = animationName;
+						this.currentFrame = 0;
+						this.frameTimer = 0;
+					}
+				}
+
+				updateAnimation() {
+					const anim = this.animations[this.currentAnimation];
+					if (!anim) return;
+					
+					this.frameTimer++;
+					
+					// Time to switch to next frame?
+					if (this.frameTimer >= this.frameDelay) {
+						this.frameTimer = 0;
+						this.currentFrame++;
+						
+						// Loop or stop at end
+						if (this.currentFrame >= anim.frames) {
+							if (anim.loop) {
+								this.currentFrame = 0;
+							} else {
+								this.currentFrame = anim.frames - 1; // Stay on last frame
+							}
+						}
+					}
+				}
+				
+				determineAnimation() {
+					// Priority system: higher priority animations override lower ones
+					if (this.attackCooldown > 0) {
+						this.setAnimation('attack');
+					} else if (this.hitStunTime > 0) {
+						this.setAnimation('hit');
+					} else if (this.isJumping) {
+						this.setAnimation('jump');
+					} else if (Math.abs(this.velX) > 0.1) {
+						this.setAnimation('walk');
+					} else {
+						this.setAnimation('idle');
+					}
 				}
 
 				draw() {
 					ctx.save();
-					ctx.fillStyle = this.name === 'Elon Musk' ? 'blue' : 'red';
+					ctx.fillStyle = this.name === 'Elon Musk' ? 'transparent' : 'transparent';
 					ctx.fillRect(this.x, this.y, this.width, this.height);
+
+					this.drawSprite();
+
 					ctx.restore();
 				}
 
-				// FUTURE: AI CAPABLITIESd
+				drawSprite() {
+					const anim = this.animations[this.currentAnimation];
+					if (!anim) return;
+					
+					// Calculate source position in sprite sheet
+					const sourceX = this.currentFrame * this.spriteWidth;
+					const sourceY = anim.row * this.spriteHeight;
+					
+					// Handle flipping for direction
+					if (!this.facingRight) {
+						ctx.save();
+						ctx.translate(this.x + this.width, this.y);
+						ctx.scale(-1, 1);
+						
+						// Draw the sprite (flipped)
+						ctx.drawImage(
+							this.spriteSheet,
+							sourceX, sourceY, this.spriteWidth, this.spriteHeight,  // Source
+							0, 0, this.width, this.height                           // Destination
+						);
+						
+						ctx.restore();
+					} else {
+						// Draw the sprite (normal)
+						ctx.drawImage(
+							this.spriteSheet,
+							sourceX, sourceY, this.spriteWidth, this.spriteHeight,  // Source
+							this.x, this.y, this.width, this.height                  // Destination
+						);
+					}
+				}
+
+				// FUTURE: AI CAPABLITIES
 
 				update() {
 
@@ -294,8 +404,17 @@
 							this.velY -= this.jump_power;
 							this.isJumping = true;
 						}
-						if (keys['a']) this.velX -= this.speed;
-						if (keys['d']) this.velX += this.speed;
+						if (keys['a']) {
+							this.velX -= this.speed;
+							this.facingRight = false;
+						}
+						if (keys['d']) {
+							this.velX += this.speed;
+							this.facingRight = true;
+						}
+						if (keys['f']) {
+							this.doAttack();
+						}
 					}
 
 					// Apply gravity
@@ -315,10 +434,36 @@
 
 					if (this.x < 0) this.x = 0;
 					if (this.x + this.width > CONFIG.width) this.x = CONFIG.width - this.width;
+				
+					// Attack cooldown
+					if (this.attackCooldown > 0) {
+						this.attackCooldown--;
+						if (this.isAttacking) this.attackAnimationTime++;
+					} else {
+						this.isAttacking = false;
+						this.attackAnimationTime = 0;
+					}
+
+					this.determineAnimation();
+					this.updateAnimation();
 				}
 
-				attack() {
+				// Creates a rect for the attack area
+				getAttackBox() {
+					return {
+						x: this.facingRight ? this.x + this.width : this.x - this.attack_range,
+						y: this.y,
+						width: this.attack_range,
+						height: this.height
+					}
+				}
 
+				// Sets attack state
+				doAttack() {
+					if (this.attackCooldown <= 0) {
+						this.isAttacking = true;
+						this.attackCooldown = 60; // Cooldown in frames
+					}
 				}
  			}
 
@@ -382,11 +527,11 @@
 
 				gameState.phase = 'battle';
 				if (player === 'Elon Musk') {
-					player1 = new Character(false, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power);
-					player2 = new Character(true, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power);
+					player1 = new Character(false, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.attack_range);
+					player2 = new Character(true, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.attack_range);
 				} else {
-					player1 = new Character(false, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power);
-					player2 = new Character(true, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power);
+					player1 = new Character(true, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.attack_range);
+					player2 = new Character(false, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.attack_range);
 				}
 			
 				// Start Timer
@@ -403,12 +548,37 @@
 				gameLoop();
 			}
 
+			// Collision check of 2 rects
+			function checkCollision(rect1, rect2) {
+				return (
+					rect1.x < rect2.x + rect2.width &&
+					rect1.x + rect1.width > rect2.x &&
+					rect1.y < rect2.y + rect2.height &&
+					rect1.y + rect1.height > rect2.y
+				);
+			}
+
 			// Game Loop
 			function gameLoop() {
 				if (gameState.phase !== 'battle') return;
 
 				player1.update();
 				player2.update();
+
+				// Check for attacks
+				if (player1.isAttacking) {
+					const attackBox = player1.getAttackBox();
+					if (checkCollision(attackBox, {x: player2.x, y: player2.y, width: player2.width, height: player2.height})) {
+						player2.health -= player1.attack;
+						player1.isAttacking = false;
+					}
+				} else if (player2.isAttacking) {
+					const attackBox = player2.getAttackBox();
+					if (checkCollision(attackBox, {x: player1.x, y: player1.y, width: player1.width, height: player1.height})) {
+						player1.health -= player2.attack;
+						player2.isAttacking = false;
+					}
+				}
 
 				//player1.health--; // TEMP DAMAGE
 
@@ -445,6 +615,9 @@
 
 			// End Battle
 			function endBattle(reason) {
+				updateHealthBar('player1', player1);
+				updateHealthBar('player2', player2);
+
 				clearInterval(timer);
 				gameState.phase = 'gameover';
 
