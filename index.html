@@ -107,6 +107,7 @@
 				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 				font-size: 2vh;
 				z-index: 10;
+				align-items: center;
 			}
 
 			.player1-hud, .player2-hud {
@@ -124,7 +125,56 @@
 				width: 100%; /* Will be updated dynamically */
 			}
 
+			.timer {
+				font-size: 5vh;
+				color: white;
+				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+			}
 
+			.gameOverScreen {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				background: rgba(0, 0, 0, 0.8);
+				color: white;
+				padding: 30px;
+				border-radius: 10px;
+				text-align: center;
+				display: none; /* Will be shown on game over */
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				row-gap: 2vh;
+				z-index: 20;
+			}
+
+			.gameOverText {
+				font-size: 4vh;
+				margin-bottom: 20px;
+			}
+
+			.winnerName {
+				font-size: 3vh;
+				margin-bottom: 20px;
+			}
+
+			.playAgainButton {
+				font-size: 2.5vh;
+				font-family: 'Press Start 2P', cursive;
+				padding: 10px 20px;
+				background-color: transparent;
+				border: 2px solid white;
+				border-radius: 5px;
+				cursor: pointer;
+				transition: background 0.2s, color 0.2s;
+				color: white;
+			}
+
+			.playAgainButton:hover {
+				background-color: white;
+				color: black;
+			}
 
 		</style>
 	</head>
@@ -160,10 +210,18 @@
 					<p class="player1-name">Elon Musk</p>
 				</div>
 
+				<div class="timer" id="timer"></div>
+
 				<div class="player2-hud"> <!-- Health Container-->
 					<div class="player2-health" id="player2-health"></div>
 					<p class="player2-name">Sam Altman</p>
 				</div>
+			</div>
+
+			<div id="gameOverScreen" class="gameOverScreen">
+				<h1 class="gameOverText" id="gameOverText">Game Over</h1>
+				<div class="winnerName" id="winnerName">Test Winner</div>
+				<button class="playAgainButton" onclick="location.reload()">Play Again</button>
 			</div>
 		</div>
 
@@ -312,6 +370,7 @@
 			function startBattle(player) {
 				document.getElementById('SelectionScreen').style.display = 'none';
 				document.getElementById('hud').style.display = 'flex';
+				document.getElementById('timer').textContent = CONFIG.battleTime;
 
 				if (player === 'Elon Musk') {
 					gameState.selections.player1 = 'Elon Musk';
@@ -334,6 +393,7 @@
 
 				timer = setInterval(() => {
 					gameState.timeRemaining--;
+					document.getElementById('timer').textContent = gameState.timeRemaining;
 
 					if (gameState.timeRemaining <= 0) {
 						endBattle('time');
@@ -354,6 +414,13 @@
 
 				updateHealthBar('player1', player1);
 				updateHealthBar('player2', player2);
+
+				// Check for end conditions
+				if (player1.health <= 0) {
+					endBattle('p2');
+				} else if (player2.health <= 0) {
+					endBattle('p1');
+				}
 
 				render();
 				requestAnimationFrame(gameLoop);
@@ -376,7 +443,23 @@
 				player2.draw();
 			}
 
-			
+			// End Battle
+			function endBattle(reason) {
+				clearInterval(timer);
+				gameState.phase = 'gameover';
+
+				let winner;
+				if (reason === 'p1') {
+					winner = 'Elon Musk wins!';
+				} else if (reason === 'p2') {
+					winner = 'Sam Altman wins!';
+				} else {
+					winner = 'It\'s a Draw!';
+				}
+
+				document.getElementById('gameOverScreen').style.display = 'flex';
+				document.getElementById('winnerName').textContent = winner;
+			}
 			
 		</script>
 	</body>
