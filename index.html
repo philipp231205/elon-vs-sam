@@ -198,7 +198,7 @@
 					</div>
 				</div>
 				<p class = "selection-controls">
-				WASD (Move/Jump) | F (Melee) | G (Shoot)
+				WASD (Move/Jump) | F (Melee) || Arrow Keys (Move/Jump) | Enter (Melee)
 				</p>
 			</div>
 
@@ -238,26 +238,24 @@
 				characters: {
 					elon: {
 						name: 'Elon Musk',
-						health: 100,
+						health: 200,
 						attack: 20,
-						speed: 4,
-						jump_power: 10,
-						attack_range: 20,
+						speed: 6,
+						jump_power: 12,
 					},
 					sam: {
 						name: 'Sam Altman',
-						health: 100,
+						health: 150,
 						attack: 15,
-						speed: 8,
-						jump_power: 12,
-						attack_range: 15,
+						speed: 9,
+						jump_power: 14,
 					}
 				}
 			}
 
 			// Character Class
 			class Character {
-				constructor(isAI, name, health, attack, speed, jump_power, attack_range) {
+				constructor(isAI, name, health, attack, speed, jump_power) {
 					this.isAI = isAI;
 					this.name = name;
 					this.health = health;
@@ -265,12 +263,11 @@
 					this.attack = attack;
 					this.speed = speed;
 					this.jump_power = jump_power;
-					this.attack_range = attack_range;
 
 					this.x = 0;
 					this.y = 0;
-					this.width = window.innerWidth * 0.2;
-					this.height = window.innerHeight * 0.4;
+					this.width = window.innerWidth * 0.25;
+					this.height = window.innerHeight * 0.5;
 
 					this.velX = 0;
 					this.velY = 0;
@@ -415,6 +412,24 @@
 						if (keys['f']) {
 							this.doAttack();
 						}
+					} else {
+						// 2 Player placeholder controls (for testing)
+
+						if (keys['arrowup'] && !this.isJumping) {
+							this.velY -= this.jump_power;
+							this.isJumping = true;
+						}
+						if (keys['arrowleft']) {
+							this.velX -= this.speed;
+							this.facingRight = false;
+						}
+						if (keys['arrowright']) {
+							this.velX += this.speed;
+							this.facingRight = true;
+						}
+						if (keys['enter']) {
+							this.doAttack();
+						}
 					}
 
 					// Apply gravity
@@ -448,13 +463,36 @@
 					this.updateAnimation();
 				}
 
-				// Creates a rect for the attack area
-				getAttackBox() {
+				// Creates a rect for the body (hurtbox) — person occupies ~25% of sprite width (centered) and ~90% of sprite height (starting 5% from top)
+				getBodyBox() {
 					return {
-						x: this.facingRight ? this.x + this.width : this.x - this.attack_range,
-						y: this.y,
-						width: this.attack_range,
-						height: this.height
+						x: this.x + this.width * 0.375,
+						y: this.y + this.height * 0.05,
+						width: this.width * 0.25,
+						height: this.height * 0.90
+					};
+				}
+
+				// Creates a rect for the attack area — punch reaches ~40% of sprite width in facing direction, upper 50% of body only
+				getAttackBox() {
+					const bodyOffset = this.width * 0.375; // person left edge at 37.5% of sprite
+					const attackWidth = this.width * 0.40;
+					const boxY = this.y + this.height * 0.05;
+					const boxH = this.height * 0.45; // top half of the 90% body height
+					if (this.facingRight) {
+						return {
+							x: this.x + bodyOffset,
+							y: boxY,
+							width: attackWidth,
+							height: boxH
+						};
+					} else {
+						return {
+							x: this.x + this.width - bodyOffset - attackWidth,
+							y: boxY,
+							width: attackWidth,
+							height: boxH
+						};
 					}
 				}
 
@@ -505,6 +543,9 @@
 			const keys = {};
 			window.addEventListener('keydown', (e) => {
 				keys[e.key.toLowerCase()] = true;
+				if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+					e.preventDefault();
+				}
 			});
 			window.addEventListener('keyup', (e) => {
 				keys[e.key.toLowerCase()] = false;
@@ -527,11 +568,11 @@
 
 				gameState.phase = 'battle';
 				if (player === 'Elon Musk') {
-					player1 = new Character(false, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.attack_range);
-					player2 = new Character(true, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.attack_range);
+					player1 = new Character(false, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power);
+					player2 = new Character(true, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power);
 				} else {
-					player1 = new Character(true, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.attack_range);
-					player2 = new Character(false, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.attack_range);
+					player1 = new Character(true, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power);
+					player2 = new Character(false, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power);
 				}
 			
 				// Start Timer
@@ -568,13 +609,13 @@
 				// Check for attacks
 				if (player1.isAttacking) {
 					const attackBox = player1.getAttackBox();
-					if (checkCollision(attackBox, {x: player2.x, y: player2.y, width: player2.width, height: player2.height})) {
+					if (checkCollision(attackBox, player2.getBodyBox())) {
 						player2.health -= player1.attack;
 						player1.isAttacking = false;
 					}
 				} else if (player2.isAttacking) {
 					const attackBox = player2.getAttackBox();
-					if (checkCollision(attackBox, {x: player1.x, y: player1.y, width: player1.width, height: player1.height})) {
+					if (checkCollision(attackBox, player1.getBodyBox())) {
 						player1.health -= player2.attack;
 						player2.isAttacking = false;
 					}
