@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset = "UTF-8">
+		<meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+		<title>Elon vs Sam</title>
+		<meta name = "description" content = "Who can win the ultimate Showdown between Elon Musk and Sam Altman?">
+
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+			body {
+				font-family: 'Press Start 2P', cursive;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			#gameCanvas {
+				width: 100vw;
+				height: 100vh;
+				display: block;
+				background-image: url('assets/background.png');
+				background-size: cover;
+				background-position: center;
+			}
+
+			#gameContainer {
+				position: relative;
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			#SelectionScreen {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				background: rgba(255, 255, 255, 0.9);
+				padding: 20px;
+				border-radius: 10px;
+				text-align: center;
+				display: flex;
+				flex-direction: column;
+			}
+
+			.card-container {
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+			}
+
+			.selection-h1 {
+				margin-bottom: 20px;
+				font-size: 3vh;
+			}
+
+			.card {
+				display: inline-block;
+				width: 150px;
+				margin: 0 20px;
+				padding: 10px;
+				border: 2px solid #333;
+				border-radius: 10px;
+				cursor: pointer;
+				transition: transform 0.2s, box-shadow 0.2s;
+			}
+
+			.card-image {
+				width: 100%;
+				height: auto;
+				border-radius: 10px;
+			}
+
+			.card:hover {
+				transform: scale(1.05);
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+			}
+
+			.card-h2 {
+				margin-top: 10px;
+				font-size: 2vh;
+			}
+
+			.selection-controls {
+				margin-top: 20px;
+				font-size: 2vh;
+			}
+
+			.hud {
+				display: none; /* Will be shown during battle */
+				position: absolute;
+				top: 10px;
+				width: 100%;
+				justify-content: space-between;
+				padding: 0 20px;
+				box-sizing: border-box;
+				color: white;
+				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+				font-size: 2vh;
+				z-index: 10;
+			}
+
+			.player1-hud, .player2-hud {
+				background: rgba(0, 0, 0, 0.5);
+				padding: 2vh;
+				border-radius: 5px;
+				width: 20vw;
+			}
+
+			.player1-health, .player2-health {
+				height: 20px;
+				background: rgb(228, 38, 38);
+				border-radius: 5px;
+				margin-bottom: 10px;
+				width: 100%; /* Will be updated dynamically */
+			}
+
+
+
+		</style>
+	</head>
+
+	<body>
+
+		<div id = "gameContainer">
+			<!-- Character Selection Screen-->
+			<div class="SelectionScreen" id ="SelectionScreen">
+				<h1 class="selection-h1">Choose your Fighter</h1>
+
+				<div class = "card-container">
+					<div class="card" onclick="startBattle('Elon Musk')">
+						<img class = "card-image" src="assets/elon.png" alt="Elon Musk">
+						<h2 class = "card-h2">Elon Musk</h2>
+					</div>
+
+					<div class="card" onclick="startBattle('Sam Altman')">
+						<img class = "card-image" src="assets/sam.png" alt="Sam Altman">
+						<h2 class = "card-h2">Sam Altman</h2>
+					</div>
+				</div>
+				<p class = "selection-controls">
+				WASD (Move/Jump) | F (Melee) | G (Shoot)
+				</p>
+			</div>
+
+			<canvas id = "gameCanvas"></canvas>
+
+			<div id="hud" class="hud">
+				<div class="player1-hud"> <!-- Health Container-->
+					<div class="player1-health"></div>
+					<p class="player1-name">Elon Musk</p>
+				</div>
+
+				<div class="player2-hud"> <!-- Health Container-->
+					<div class="player2-health"></div>
+					<p class="player2-name">Sam Altman</p>
+				</div>
+			</div>
+		</div>
+
+
+		</canvas>
+
+		<script>
+			// Game config
+			const CONFIG = {
+				width: window.innerWidth,
+				height: window.innerHeight,
+				battleTime: 120, // seconds
+				gravity: 0.5,
+				characters: {
+					elon: {
+						name: 'Elon Musk',
+						health: 100,
+						attack: 20,
+						speed: 4,
+						jump_power: 8
+					},
+					sam: {
+						name: 'Sam Altman',
+						health: 100,
+						attack: 15,
+						speed: 6,
+						jump_power: 5
+					}
+				}
+			}
+
+			// Character Class
+			class Character {
+				constructor(isAI, name, health, attack, speed, jump_power) {
+					this.isAI = isAI;
+					this.name = name;
+					this.health = health;
+					this.attack = attack;
+					this.speed = speed;
+					this.jump_power = jump_power;
+
+					this.x = 0;
+					this.y = 0;
+					this.width = 5;
+					this.height = 5;
+
+					this.velX = 0;
+					this.velY = 0;
+
+					this.isJumping = false;
+				}
+
+				draw() {
+					ctx.save();
+					ctx.fillStyle = this.name === 'Elon Musk' ? 'blue' : 'red';
+					ctx.fillRect(this.x, this.y, this.width, this.height);
+					ctx.restore();
+				}
+
+				// FUTURE: AI CAPABLITIESd
+
+				update() {
+
+					this.velX = 0;
+
+					// Controls
+					if (!this.isAI) {
+						if (keys['w'] && !this.isJumping) {
+							this.velY -= this.jump_power;
+							this.isJumping = true;
+						}
+						if (keys['a']) this.velX -= this.speed;
+						if (keys['d']) this.velX += this.speed;
+					}
+
+					// Apply gravity
+					this.velY += CONFIG.gravity;
+
+					// Update position
+					this.x += this.velX;
+					this.y += this.velY;
+
+					// Boundary checks
+
+					if (this.y + this.height >= CONFIG.height) {
+						this.y = CONFIG.height - this.height;
+						this.isJumping = false;
+						this.velY = 0;
+					}
+
+					if (this.x < 0) this.x = 0;
+					if (this.x + this.width > CONFIG.width) this.x = CONFIG.width - this.width;
+				}
+
+				attack() {
+
+				}
+ 			}
+
+			// Game State
+
+			const gameState = {
+				phase: 'selection', // 'selection', 'battle', 'gameover'
+				selections: {
+					player1: null,
+					player2: null
+				},
+				timeRemaining: CONFIG.battleTime || 120,
+				winner: null
+			}
+
+			// Canvas setup
+			const canvas = document.getElementById('gameCanvas');
+			const ctx = canvas.getContext('2d');
+			canvas.width = CONFIG.width;
+			canvas.height = CONFIG.height;
+
+			// Resizing
+			window.addEventListener('resize', () => {
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+				CONFIG.width = window.innerWidth;
+				CONFIG.height = window.innerHeight;
+				render();
+			});
+
+			// Game Objects
+
+			let player1 = null;
+			let player2 = null;
+			let timer = null;
+
+			// Input Handling
+
+			const keys = {};
+			window.addEventListener('keydown', (e) => {
+				keys[e.key.toLowerCase()] = true;
+			});
+			window.addEventListener('keyup', (e) => {
+				keys[e.key.toLowerCase()] = false;
+			});
+
+			// Start Battle
+
+			function startBattle(player) {
+				document.getElementById('SelectionScreen').style.display = 'none';
+				document.getElementById('hud').style.display = 'flex';
+
+				if (player === 'Elon Musk') {
+					gameState.selections.player1 = 'Elon Musk';
+					gameState.selections.player2 = 'Sam Altman';
+				} else {
+					gameState.selections.player1 = 'Sam Altman';
+					gameState.selections.player2 = 'Elon Musk';
+				}
+
+				gameState.phase = 'battle';
+				if (player === 'Elon Musk') {
+					player1 = new Character(false, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power);
+					player2 = new Character(true, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power);
+				} else {
+					player1 = new Character(false, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power);
+					player2 = new Character(true, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power);
+				}
+			
+				// Start Timer
+
+				timer = setInterval(() => {
+					gameState.timeRemaining--;
+
+					if (gameState.timeRemaining <= 0) {
+						endBattle('time');
+					}
+				}, 1000);
+
+				gameLoop();
+			}
+
+			// Game Loop
+			function gameLoop() {
+				if (gameState.phase !== 'battle') return;
+
+				player1.update();
+				player2.update();
+
+				render();
+				requestAnimationFrame(gameLoop);
+			}
+
+			// Render
+			function render() {
+				// Clear Canvas
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+				// FUTURE OBJECTS WILL BE DRAWN HERE TODO:
+
+				// Draw Players
+				player1.draw();
+				player2.draw();
+			}
+
+			
+			
+		</script>
+	</body>
+</html>
