@@ -198,7 +198,7 @@
 					</div>
 				</div>
 				<p class = "selection-controls">
-				WASD (Move/Jump) | F (Melee) || Arrow Keys (Move/Jump) | Enter (Melee)
+				WASD (Move/Jump) | SPACE (Melee)
 				</p>
 			</div>
 
@@ -238,8 +238,8 @@
 				characters: {
 					elon: {
 						name: 'Elon Musk',
-						health: 200,
-						attack: 20,
+						health: 170,
+						attack: 17,
 						speed: 6,
 						jump_power: 12,
 					},
@@ -278,6 +278,13 @@
 					this.attackAnimationTime = 0;
 					this.hitStunTime = 0;
 					this.facingRight = true;
+
+					// AI
+					this.aiDecisionCooldown = 0;
+					this.aiWalking = false;
+					this.aiWalkTarget = 0;
+					this.aiJumping = false;
+					this.aiAttacking = false;
 
 
 					// Sprites
@@ -391,9 +398,13 @@
 
 				// FUTURE: AI CAPABLITIES
 
-				update() {
+				update(opponent) {
 
 					this.velX = 0;
+
+					if (this.isAI) {
+						this.updateAI(opponent);
+					}
 
 					// Controls
 					if (!this.isAI) {
@@ -409,25 +420,7 @@
 							this.velX += this.speed;
 							this.facingRight = true;
 						}
-						if (keys['f']) {
-							this.doAttack();
-						}
-					} else {
-						// 2 Player placeholder controls (for testing)
-
-						if (keys['arrowup'] && !this.isJumping) {
-							this.velY -= this.jump_power;
-							this.isJumping = true;
-						}
-						if (keys['arrowleft']) {
-							this.velX -= this.speed;
-							this.facingRight = false;
-						}
-						if (keys['arrowright']) {
-							this.velX += this.speed;
-							this.facingRight = true;
-						}
-						if (keys['enter']) {
+						if (keys[' ']) {
 							this.doAttack();
 						}
 					}
@@ -461,6 +454,64 @@
 
 					this.determineAnimation();
 					this.updateAnimation();
+				}
+
+				// AI Decisions
+				updateAI(opponent) {
+					const distanceToOpp = opponent.x - this.x;
+
+					if (this.aiDecisionCooldown <= 0) {
+						// AI walking towards opponent if far away, otherwise random movement
+						if (distanceToOpp > 50) {
+							this.aiWalking = true;
+							this.aiWalkTarget = opponent.x; // Walk right
+						} else if (distanceToOpp < -50) {
+							this.aiWalking = true;
+							this.aiWalkTarget = opponent.x; // Walk left
+						}
+
+						// Random jump
+						if (Math.random() < 0.01 && !this.isJumping) {
+							this.aiJumping = true;
+						}	
+
+						// Attack if close
+						if (Math.abs(distanceToOpp) < 60 && this.attackCooldown <= 0) {
+							this.aiAttacking = true;
+						}
+
+						this.aiDecisionCooldown = 30 + Math.floor(Math.random() * 30); // New decision every 0.5-1 seconds
+					}
+
+					this.aiDecisionCooldown--;
+
+
+					// Perform actions based on decisions
+
+					if (this.aiWalking) {
+						if (distanceToOpp > 50) {
+							this.velX += this.speed;
+							this.facingRight = true;
+						} else if (distanceToOpp < -50) {
+							this.velX -= this.speed;
+							this.facingRight = false;
+						}
+
+						if (Math.abs(distanceToOpp) < 10) {
+							this.aiWalking = false; // Stop walking if close enough
+						}
+					}
+
+					if (this.aiJumping) {
+						this.velY -= this.jump_power;
+						this.isJumping = true;
+						this.aiJumping = false; // Reset jump decision
+					}
+
+					if (this.aiAttacking) {
+						this.doAttack();
+						this.aiAttacking = false; // Reset attack decision
+					}
 				}
 
 				// Creates a rect for the body (hurtbox) — person occupies ~25% of sprite width (centered) and ~90% of sprite height (starting 5% from top)
@@ -542,13 +593,13 @@
 
 			const keys = {};
 			window.addEventListener('keydown', (e) => {
-				keys[e.key.toLowerCase()] = true;
+				keys[e.key] = true;
 				if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
 					e.preventDefault();
 				}
 			});
 			window.addEventListener('keyup', (e) => {
-				keys[e.key.toLowerCase()] = false;
+				keys[e.key] = false;
 			});
 
 			// Start Battle
@@ -603,8 +654,8 @@
 			function gameLoop() {
 				if (gameState.phase !== 'battle') return;
 
-				player1.update();
-				player2.update();
+				player1.update(player2);
+				player2.update(player1);
 
 				// Check for attacks
 				if (player1.isAttacking) {
