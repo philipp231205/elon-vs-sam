@@ -238,24 +238,26 @@
 				characters: {
 					elon: {
 						name: 'Elon Musk',
-						health: 170,
+						health: 370,
 						attack: 17,
 						speed: 6,
 						jump_power: 12,
+						ai_decisionCooldown: 30
 					},
 					sam: {
 						name: 'Sam Altman',
-						health: 150,
+						health: 350,
 						attack: 15,
 						speed: 9,
 						jump_power: 14,
+						ai_decisionCooldown: 50
 					}
 				}
 			}
 
 			// Character Class
 			class Character {
-				constructor(isAI, name, health, attack, speed, jump_power) {
+				constructor(isAI, name, health, attack, speed, jump_power, aiDefaultDecisionCooldown) {
 					this.isAI = isAI;
 					this.name = name;
 					this.health = health;
@@ -281,6 +283,7 @@
 
 					// AI
 					this.aiDecisionCooldown = 0;
+					this.aiDefaultDecisionCooldown = aiDefaultDecisionCooldown || 30;
 					this.aiWalking = false;
 					this.aiWalkTarget = 0;
 					this.aiJumping = false;
@@ -480,7 +483,7 @@
 							this.aiAttacking = true;
 						}
 
-						this.aiDecisionCooldown = 30 + Math.floor(Math.random() * 30); // New decision every 0.5-1 seconds
+						this.aiDecisionCooldown = this.aiDefaultDecisionCooldown + Math.floor(Math.random() * 15); // New decision every 0.5-1 seconds
 					}
 
 					this.aiDecisionCooldown--;
@@ -619,11 +622,11 @@
 
 				gameState.phase = 'battle';
 				if (player === 'Elon Musk') {
-					player1 = new Character(false, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power);
-					player2 = new Character(true, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power);
+					player1 = new Character(false, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.ai_decisionCooldown);
+					player2 = new Character(true, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.ai_decisionCooldown);
 				} else {
-					player1 = new Character(true, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power);
-					player2 = new Character(false, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power);
+					player1 = new Character(true, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.ai_decisionCooldown);
+					player2 = new Character(false, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.ai_decisionCooldown);
 				}
 			
 				// Start Timer
