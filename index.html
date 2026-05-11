@@ -628,6 +628,12 @@
 					player1 = new Character(true, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.ai_decisionCooldown);
 					player2 = new Character(false, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.ai_decisionCooldown);
 				}
+
+				player1.x = CONFIG.width * 0.25 - player1.width / 2;
+				player1.y = CONFIG.height - player1.height;
+
+				player2.x = CONFIG.width * 0.75 - player2.width / 2;
+				player2.y = CONFIG.height - player2.height;
 			
 				// Start Timer
 
