@@ -7,176 +7,7 @@
 		<title>Elon vs Sam</title>
 		<meta name = "description" content = "Who can win the ultimate Showdown between Elon Musk and Sam Altman?">
 
-		<style>
-			@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
-			body {
-				font-family: 'Press Start 2P', cursive;
-				margin: 0;
-				padding: 0;
-				overflow: hidden;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
-
-			#gameCanvas {
-				width: 100vw;
-				height: 100vh;
-				display: block;
-				background-image: url('assets/background.png');
-				background-size: cover;
-				background-position: center;
-			}
-
-			#gameContainer {
-				position: relative;
-				width: 100%;
-				height: 100%;
-				overflow: hidden;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
-
-			#SelectionScreen {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				background: rgba(255, 255, 255, 0.9);
-				padding: 20px;
-				border-radius: 10px;
-				text-align: center;
-				display: flex;
-				flex-direction: column;
-			}
-
-			.card-container {
-				display: flex;
-				flex-direction: row;
-				justify-content: center;
-			}
-
-			.selection-h1 {
-				margin-bottom: 20px;
-				font-size: 3vh;
-			}
-
-			.card {
-				display: inline-block;
-				width: 150px;
-				margin: 0 20px;
-				padding: 10px;
-				border: 2px solid #333;
-				border-radius: 10px;
-				cursor: pointer;
-				transition: transform 0.2s, box-shadow 0.2s;
-			}
-
-			.card-image {
-				width: 100%;
-				height: auto;
-				border-radius: 10px;
-			}
-
-			.card:hover {
-				transform: scale(1.05);
-				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-			}
-
-			.card-h2 {
-				margin-top: 10px;
-				font-size: 2vh;
-			}
-
-			.selection-controls {
-				margin-top: 20px;
-				font-size: 2vh;
-			}
-
-			.hud {
-				display: none; /* Will be shown during battle */
-				position: absolute;
-				top: 10px;
-				width: 100%;
-				justify-content: space-between;
-				padding: 0 20px;
-				box-sizing: border-box;
-				color: white;
-				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-				font-size: 2vh;
-				z-index: 10;
-				align-items: center;
-			}
-
-			.player1-hud, .player2-hud {
-				background: rgba(0, 0, 0, 0.5);
-				padding: 2vh;
-				border-radius: 5px;
-				width: 20vw;
-			}
-
-			.player1-health, .player2-health {
-				height: 20px;
-				background: rgb(228, 38, 38);
-				border-radius: 5px;
-				margin-bottom: 10px;
-				width: 100%; /* Will be updated dynamically */
-			}
-
-			.timer {
-				font-size: 5vh;
-				color: white;
-				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-			}
-
-			.gameOverScreen {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				background: rgba(0, 0, 0, 0.8);
-				color: white;
-				padding: 30px;
-				border-radius: 10px;
-				text-align: center;
-				display: none; /* Will be shown on game over */
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				row-gap: 2vh;
-				z-index: 20;
-			}
-
-			.gameOverText {
-				font-size: 4vh;
-				margin-bottom: 20px;
-			}
-
-			.winnerName {
-				font-size: 3vh;
-				margin-bottom: 20px;
-			}
-
-			.playAgainButton {
-				font-size: 2.5vh;
-				font-family: 'Press Start 2P', cursive;
-				padding: 10px 20px;
-				background-color: transparent;
-				border: 2px solid white;
-				border-radius: 5px;
-				cursor: pointer;
-				transition: background 0.2s, color 0.2s;
-				color: white;
-			}
-
-			.playAgainButton:hover {
-				background-color: white;
-				color: black;
-			}
-
-		</style>
+		<link rel="stylesheet" href="styles.css">
 	</head>
 
 	<body>
@@ -184,22 +15,56 @@
 		<div id = "gameContainer">
 			<!-- Character Selection Screen-->
 			<div class="SelectionScreen" id ="SelectionScreen">
-				<h1 class="selection-h1">Choose your Fighter</h1>
 
-				<div class = "card-container">
-					<div class="card" onclick="startBattle('Elon Musk')">
-						<img class = "card-image" src="assets/elon.png" alt="Elon Musk">
-						<h2 class = "card-h2">Elon Musk</h2>
+				<!-- Single Player vs Multiplayer Selection Screen-->
+				<div class="SelectionScreenTabBar">
+					<div class="SelectionScreenTab" id="SelectionSingle" onclick="toggleSinglePlayer()">
+						Single
 					</div>
 
-					<div class="card" onclick="startBattle('Sam Altman')">
-						<img class = "card-image" src="assets/sam.png" alt="Sam Altman">
-						<h2 class = "card-h2">Sam Altman</h2>
+					<div class="SelectionScreenTab" id="SelectionMultiplayer" onclick="toggleSinglePlayer()" style="color:#333; background-color: white;">
+						Player
 					</div>
 				</div>
-				<p class = "selection-controls">
-				WASD (Move/Jump) | SPACE (Melee)
-				</p>
+
+				<div id="selection_singleplayer">
+					<h1 class="selection-h1">Choose your Fighter</h1>
+
+					<div class = "card-container">
+						<div class="card" onclick="startBattle('Elon Musk')">
+							<img class = "card-image" src="assets/elon.png" alt="Elon Musk">
+							<h2 class = "card-h2">Elon Musk</h2>
+						</div>
+
+						<div class="card" onclick="startBattle('Sam Altman')">
+							<img class = "card-image" src="assets/sam.png" alt="Sam Altman">
+							<h2 class = "card-h2">Sam Altman</h2>
+						</div>
+					</div>
+					<p class = "selection-controls">
+					WASD (Move/Jump) | SPACE (Melee)
+					</p>
+				</div>
+
+				<div id="selection_multiplayer" style="display:none">
+					<h1 class="selection-h1">Choose Fighter for Player 1</h1>
+
+					<div class = "card-container">
+						<div class="card" onclick="startBattle('Elon Musk')">
+							<img class = "card-image" src="assets/elon.png" alt="Elon Musk">
+							<h2 class = "card-h2">Elon Musk</h2>
+						</div>
+
+						<div class="card" onclick="startBattle('Sam Altman')">
+							<img class = "card-image" src="assets/sam.png" alt="Sam Altman">
+							<h2 class = "card-h2">Sam Altman</h2>
+						</div>
+					</div>
+					<p class = "selection-controls">
+					Player 1: WASD (Move/Jump) | SPACE (Melee) <br>
+					Player 2: Arrows (Move/Jump) | ENTER (Melee)
+					</p>
+				</div>
 			</div>
 
 			<canvas id = "gameCanvas"></canvas>
@@ -604,6 +469,7 @@
 
 			// Game Objects
 
+			let singeplayer = true;
 			let player1 = null;
 			let player2 = null;
 			let timer = null;
@@ -620,6 +486,39 @@
 			window.addEventListener('keyup', (e) => {
 				keys[e.key] = false;
 			});
+
+			// Singeplayer toggle
+			function toggleSinglePlayer() {
+				if (singeplayer) {
+					singeplayer = false;
+
+					document.getElementById('selection_singleplayer').style.display = 'none';
+					document.getElementById('selection_multiplayer').style.display = 'inline-block';
+					
+					let selectionSingle = document.getElementById('SelectionSingle');
+					let selectionMultiplayer = document.getElementById('SelectionMultiplayer');
+
+					selectionSingle.style.color = "#333";
+					selectionSingle.style.backgroundColor = "white";
+
+					selectionMultiplayer.style.color = "white";
+					selectionMultiplayer.style.backgroundColor = "#333";
+				} else {
+					singeplayer = true;
+
+					document.getElementById('selection_singleplayer').style.display = 'inline-block';
+					document.getElementById('selection_multiplayer').style.display = 'none';
+					
+					let selectionSingle = document.getElementById('SelectionSingle');
+					let selectionMultiplayer = document.getElementById('SelectionMultiplayer');
+
+					selectionSingle.style.color = "white";
+					selectionSingle.style.backgroundColor = "#333";
+
+					selectionMultiplayer.style.color = "#333";
+					selectionMultiplayer.style.backgroundColor = "white";
+				}
+			}
 
 			// Start Battle
 
