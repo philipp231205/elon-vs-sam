@@ -23,7 +23,7 @@
 					</div>
 
 					<div class="SelectionScreenTab" id="SelectionMultiplayer" onclick="toggleSinglePlayer()" style="color:#333; background-color: white;">
-						Player
+						Multi
 					</div>
 				</div>
 
@@ -124,8 +124,9 @@
 
 			// Character Class
 			class Character {
-				constructor(isAI, name, health, attack, speed, jump_power, aiDefaultDecisionCooldown, playerWidth, playerHeight) {
+				constructor(isAI, id, name, health, attack, speed, jump_power, aiDefaultDecisionCooldown, playerWidth, playerHeight) {
 					this.isAI = isAI;
+					this.id = id;
 					this.name = name;
 					this.health = health;
 					this.maxHealth = health;
@@ -296,7 +297,7 @@
 					}
 
 					// Controls
-					if (!this.isAI) {
+					if (!this.isAI && this.id == 1) {
 						if (keys['w'] && !this.isJumping) {
 							this.velY -= this.jump_power;
 							this.isJumping = true;
@@ -310,6 +311,22 @@
 							this.facingRight = true;
 						}
 						if (keys[' ']) {
+							this.doAttack();
+						}
+					} else if (!this.isAI && this.id == 2) {
+						if (keys['ArrowUp'] && !this.isJumping) {
+							this.velY -= this.jump_power;
+							this.isJumping = true;
+						}
+						if (keys['ArrowLeft']) {
+							this.velX -= this.speed;
+							this.facingRight = false;
+						}
+						if (keys['ArrowRight']) {
+							this.velX += this.speed;
+							this.facingRight = true;
+						}
+						if (keys['Enter']) {
 							this.doAttack();
 						}
 					}
@@ -479,9 +496,9 @@
 			const keys = {};
 			window.addEventListener('keydown', (e) => {
 				keys[e.key] = true;
-				if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-					e.preventDefault();
-				}
+				//if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+				//	e.preventDefault();
+				//}
 			});
 			window.addEventListener('keyup', (e) => {
 				keys[e.key] = false;
@@ -527,21 +544,30 @@
 				document.getElementById('hud').style.display = 'flex';
 				document.getElementById('timer').textContent = CONFIG.battleTime;
 
+				let idP1;
+				let idP2;
+
 				if (player === 'Elon Musk') {
 					gameState.selections.player1 = 'Elon Musk';
 					gameState.selections.player2 = 'Sam Altman';
+
+					idP1 = 1;
+					idP2 = 2;
 				} else {
 					gameState.selections.player1 = 'Sam Altman';
 					gameState.selections.player2 = 'Elon Musk';
+
+					idP1 = 2;
+					idP2 = 1;
 				}
 
 				gameState.phase = 'battle';
 				if (player === 'Elon Musk') {
-					player1 = new Character(false, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
-					player2 = new Character(true, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
+					player1 = new Character(false, idP1, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
+					player2 = new Character(singeplayer, idP2, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
 				} else {
-					player1 = new Character(true, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
-					player2 = new Character(false, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
+					player1 = new Character(singeplayer, idP1, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
+					player2 = new Character(false, idP2, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
 				}
 
 				player1.x = CONFIG.width * 0.25 - player1.width / 2;
