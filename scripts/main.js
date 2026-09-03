@@ -1,30 +1,6 @@
-// Game config
-const CONFIG = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-    playerwidth: window.innerWidth * 0.1,
-    playerheight: window.innerHeight * 0.4,
-    battleTime: 120, // seconds
-    gravity: 0.5,
-    characters: {
-        elon: {
-            name: 'Elon Musk',
-            health: 370,
-            attack: 17,
-            speed: window.innerWidth / 220, // SPEED PARAMETER
-            jump_power: window.innerHeight / 40, // JUMP POWER PARAMETER
-            ai_decisionCooldown: 30
-        },
-        sam: {
-            name: 'Sam Altman',
-            health: 350,
-            attack: 15,
-            speed: window.innerWidth / 200, // SPEED PARAMETER
-            jump_power: window.innerHeight / 35, // JUMP POWER PARAMETER
-            ai_decisionCooldown: 50
-        }
-    }
-}
+import { CONFIG } from './config.js';
+
+import { toggleSinglePlayer } from './ui/toggleSinglePlayer.js'
 
 // Character Class
 class Character {
@@ -390,7 +366,7 @@ window.addEventListener('resize', () => {
 
 // Game Objects
 
-let singeplayer = true;
+let singleplayer = true;
 let player1 = null;
 let player2 = null;
 let timer = null;
@@ -400,46 +376,10 @@ let timer = null;
 const keys = {};
 window.addEventListener('keydown', (e) => {
     keys[e.key] = true;
-    //if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-    //	e.preventDefault();
-    //}
 });
 window.addEventListener('keyup', (e) => {
     keys[e.key] = false;
 });
-
-// Singeplayer toggle
-function toggleSinglePlayer() {
-    if (singeplayer) {
-        singeplayer = false;
-
-        document.getElementById('selection_singleplayer').style.display = 'none';
-        document.getElementById('selection_multiplayer').style.display = 'inline-block';
-        
-        let selectionSingle = document.getElementById('SelectionSingle');
-        let selectionMultiplayer = document.getElementById('SelectionMultiplayer');
-
-        selectionSingle.style.color = "#333";
-        selectionSingle.style.backgroundColor = "white";
-
-        selectionMultiplayer.style.color = "white";
-        selectionMultiplayer.style.backgroundColor = "#333";
-    } else {
-        singeplayer = true;
-
-        document.getElementById('selection_singleplayer').style.display = 'inline-block';
-        document.getElementById('selection_multiplayer').style.display = 'none';
-        
-        let selectionSingle = document.getElementById('SelectionSingle');
-        let selectionMultiplayer = document.getElementById('SelectionMultiplayer');
-
-        selectionSingle.style.color = "white";
-        selectionSingle.style.backgroundColor = "#333";
-
-        selectionMultiplayer.style.color = "#333";
-        selectionMultiplayer.style.backgroundColor = "white";
-    }
-}
 
 // Start Battle
 
@@ -468,9 +408,9 @@ function startBattle(player) {
     gameState.phase = 'battle';
     if (player === 'Elon Musk') {
         player1 = new Character(false, idP1, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
-        player2 = new Character(singeplayer, idP2, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
+        player2 = new Character(singleplayer, idP2, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
     } else {
-        player1 = new Character(singeplayer, idP1, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
+        player1 = new Character(singleplayer, idP1, CONFIG.characters.elon.name, CONFIG.characters.elon.health, CONFIG.characters.elon.attack, CONFIG.characters.elon.speed, CONFIG.characters.elon.jump_power, CONFIG.characters.elon.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
         player2 = new Character(false, idP2, CONFIG.characters.sam.name, CONFIG.characters.sam.health, CONFIG.characters.sam.attack, CONFIG.characters.sam.speed, CONFIG.characters.sam.jump_power, CONFIG.characters.sam.ai_decisionCooldown, CONFIG.playerwidth, CONFIG.playerheight);
     }
 
@@ -586,11 +526,11 @@ const selectSinglePlayer = document.querySelector('#SelectionSingle');
 const selectMultiPlayer = document.querySelector('#SelectionMultiplayer')
 
 selectSinglePlayer.addEventListener('click', (event) => {
-    toggleSinglePlayer();
+    singleplayer = toggleSinglePlayer(singleplayer);
 });
 
 selectMultiPlayer.addEventListener('click', (event) => {
-    toggleSinglePlayer();
+    singleplayer = toggleSinglePlayer(singleplayer);
 });
 
 const chooseP1S = document.querySelector('#P1S');
