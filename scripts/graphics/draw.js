@@ -1,0 +1,57 @@
+export function draw(obj, ctx) {
+    ctx.save();
+    //ctx.fillStyle = this.name === 'Elon Musk' ? 'red' : 'blue'; // DEBUG
+    //ctx.fillRect(this.x, this.y, this.playerWidth, this.playerHeight); // DEBUG
+
+    //let bodyOffset = this.playerWidth * 0.5; // DEBUG
+    //if (!this.facingRight) {
+    //	bodyOffset = -bodyOffset;
+    //}
+
+    //ctx.fillStyle = this.name === 'Elon Musk' ? 'green' : 'yellow'; // DEBUG
+    //ctx.fillRect(this.x + bodyOffset, this.y, this.playerWidth, this.playerHeight * 0.5); // DEBUG
+
+    drawSprite(obj, ctx);
+
+    ctx.restore();
+}
+
+function drawSprite(obj, ctx) {
+    const anim = obj.animations[obj.currentAnimation];
+    if (!anim) return;
+    
+    // Calculate source position in sprite sheet
+    const sourceX = obj.currentFrame * obj.spriteWidth;
+    const sourceY = anim.row * obj.spriteHeight;
+
+    // Calculation to center the sprite on the character's bodybox
+
+    const middlexsprite = obj.width / 2;
+    const middleysprite = obj.height / 2;
+
+    const middlexbody = (obj.playerWidth / 2) + obj.x;
+    const middleybody = (obj.playerHeight / 2) + obj.y;
+    
+    // Handle flipping for direction
+    if (!obj.facingRight) {
+        ctx.save();
+        ctx.translate(middlexbody + middlexsprite, middleybody - middleysprite);
+        ctx.scale(-1, 1);
+        
+        // Draw the sprite (flipped)
+        ctx.drawImage(
+            obj.spriteSheet,
+            sourceX, sourceY, obj.spriteWidth, obj.spriteHeight,  // Source
+            0, 0, obj.width, obj.height                           // Destination
+        );
+        
+        ctx.restore();
+    } else {
+        // Draw the sprite (normal)
+        ctx.drawImage(
+            obj.spriteSheet,
+            sourceX, sourceY, obj.spriteWidth, obj.spriteHeight,  // Source
+            middlexbody - middlexsprite, middleybody - middleysprite, obj.width, obj.height                  // Destination
+        );
+    }
+}

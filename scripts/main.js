@@ -1,6 +1,12 @@
 import { CONFIG } from './config.js';
 
-import { toggleSinglePlayer } from './ui/toggleSinglePlayer.js'
+// UI
+import { toggleSinglePlayer } from './ui/toggleSinglePlayer.js';
+import { updateHealthBar } from './ui/healthBar.js';
+
+// Graphics
+import { determineAnimation, updateAnimation } from './graphics/animation.js';
+import { draw } from './graphics/draw.js';
 
 // Character Class
 class Character {
@@ -60,110 +66,6 @@ class Character {
 
         this.spriteSheet = new Image();
         this.spriteSheet.src = `assets/${this.name.toLowerCase().replace(' ', '')}.png`;
-    }
-    
-    setAnimation(animationName) {
-        // Only change if it's a different animation
-        if (this.currentAnimation !== animationName && this.animations[animationName]) {
-            this.currentAnimation = animationName;
-            this.currentFrame = 0;
-            this.frameTimer = 0;
-        }
-    }
-
-    updateAnimation() {
-        const anim = this.animations[this.currentAnimation];
-        if (!anim) return;
-        
-        this.frameTimer++;
-        
-        // Time to switch to next frame?
-        if (this.frameTimer >= this.frameDelay) {
-            this.frameTimer = 0;
-            this.currentFrame++;
-            
-            // Loop or stop at end
-            if (this.currentFrame >= anim.frames) {
-                if (anim.loop) {
-                    this.currentFrame = 0;
-                } else {
-                    this.currentFrame = anim.frames - 1; // Stay on last frame
-                }
-            }
-        }
-    }
-    
-    determineAnimation() {
-        // Priority system: higher priority animations override lower ones
-        if (this.attackCooldown > 0) {
-            this.setAnimation('attack');
-        } else if (this.hitStunTime > 0) {
-            this.setAnimation('hit');
-        } else if (this.isJumping) {
-            this.setAnimation('jump');
-        } else if (Math.abs(this.velX) > 0.1) {
-            this.setAnimation('walk');
-        } else {
-            this.setAnimation('idle');
-        }
-    }
-
-    draw() {
-        ctx.save();
-        //ctx.fillStyle = this.name === 'Elon Musk' ? 'red' : 'blue'; // DEBUG
-        //ctx.fillRect(this.x, this.y, this.playerWidth, this.playerHeight); // DEBUG
-
-        //let bodyOffset = this.playerWidth * 0.5; // DEBUG
-        //if (!this.facingRight) {
-        //	bodyOffset = -bodyOffset;
-        //}
-
-        //ctx.fillStyle = this.name === 'Elon Musk' ? 'green' : 'yellow'; // DEBUG
-        //ctx.fillRect(this.x + bodyOffset, this.y, this.playerWidth, this.playerHeight * 0.5); // DEBUG
-
-        this.drawSprite();
-
-        ctx.restore();
-    }
-
-    drawSprite() {
-        const anim = this.animations[this.currentAnimation];
-        if (!anim) return;
-        
-        // Calculate source position in sprite sheet
-        const sourceX = this.currentFrame * this.spriteWidth;
-        const sourceY = anim.row * this.spriteHeight;
-
-        // Calculation to center the sprite on the character's bodybox
-
-        const middlexsprite = this.width / 2;
-        const middleysprite = this.height / 2;
-
-        const middlexbody = (this.playerWidth / 2) + this.x;
-        const middleybody = (this.playerHeight / 2) + this.y;
-        
-        // Handle flipping for direction
-        if (!this.facingRight) {
-            ctx.save();
-            ctx.translate(middlexbody + middlexsprite, middleybody - middleysprite);
-            ctx.scale(-1, 1);
-            
-            // Draw the sprite (flipped)
-            ctx.drawImage(
-                this.spriteSheet,
-                sourceX, sourceY, this.spriteWidth, this.spriteHeight,  // Source
-                0, 0, this.width, this.height                           // Destination
-            );
-            
-            ctx.restore();
-        } else {
-            // Draw the sprite (normal)
-            ctx.drawImage(
-                this.spriteSheet,
-                sourceX, sourceY, this.spriteWidth, this.spriteHeight,  // Source
-                middlexbody - middlexsprite, middleybody - middleysprite, this.width, this.height                  // Destination
-            );
-        }
     }
 
     // FUTURE: AI CAPABLITIES
@@ -238,8 +140,8 @@ class Character {
             this.attackAnimationTime = 0;
         }
 
-        this.determineAnimation();
-        this.updateAnimation();
+        determineAnimation(this);
+        updateAnimation(this);
     }
 
     // AI Decisions
@@ -482,11 +384,6 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-function updateHealthBar(player, character) {
-    const healtPercent = (character.health / character.maxHealth) * 100;
-    document.getElementById(`${player}-health`).style.width = `${healtPercent}%`;
-}
-
 // Render
 function render() {
     // Clear Canvas
@@ -495,8 +392,8 @@ function render() {
     // FUTURE OBJECTS WILL BE DRAWN HERE TODO:
 
     // Draw Players
-    player1.draw();
-    player2.draw();
+    draw(player1, ctx);
+    draw(player2, ctx);
 }
 
 // End Battle
