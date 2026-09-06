@@ -1,4 +1,4 @@
-export function draw(obj, ctx) {
+function draw(obj, ctx) {
     ctx.save();
     //ctx.fillStyle = this.name === 'Elon Musk' ? 'red' : 'blue'; // DEBUG
     //ctx.fillRect(this.x, this.y, this.playerWidth, this.playerHeight); // DEBUG
@@ -54,4 +54,16 @@ function drawSprite(obj, ctx) {
             middlexbody - middlexsprite, middleybody - middleysprite, obj.width, obj.height                  // Destination
         );
     }
+}
+
+// Render
+export function render(player1, player2, ctx, canvas) {
+    // Clear Canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // FUTURE OBJECTS WILL BE DRAWN HERE TODO:
+
+    // Draw Players
+    draw(player1, ctx);
+    draw(player2, ctx);
 }

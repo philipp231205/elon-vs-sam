@@ -6,7 +6,11 @@ import { updateHealthBar } from './ui/healthBar.js';
 
 // Graphics
 import { determineAnimation, updateAnimation } from './graphics/animation.js';
-import { draw } from './graphics/draw.js';
+import { render } from './graphics/draw.js';
+
+// Physics
+import { checkCollision } from './physics/collisions.js';
+import { getBodyBox, getAttackBox } from './physics/boxes.js';
 
 // Character Class
 class Character {
@@ -202,34 +206,6 @@ class Character {
         }
     }
 
-    // Creates a rect for the body (hurtbox) — person occupies ~25% of sprite width (centered) and ~90% of sprite height (starting 5% from top)
-    getBodyBox() {
-        return {
-            x: this.x,
-            y: this.y,
-            width: this.playerWidth,
-            height: this.playerHeight
-        };
-    }
-
-    // AttackBox is the top 50% height of the bodybox, starts at the x center and has the same with as the bodybox, but moved in the facing direction
-    getAttackBox() {
-        let bodyOffset = this.playerWidth * 0.5;
-        if (!this.facingRight) {
-            bodyOffset = -bodyOffset;
-        }
-        const attackWidth = this.playerWidth;
-        const boxY = this.y;
-        const boxH = this.playerHeight * 0.5;
-
-        return {
-            x: this.x + bodyOffset,
-            y: boxY,
-            width: attackWidth,
-            height: boxH
-        };
-    }
-
     // Sets attack state
     doAttack() {
         if (this.attackCooldown <= 0) {
@@ -263,7 +239,7 @@ window.addEventListener('resize', () => {
     canvas.height = window.innerHeight;
     CONFIG.width = window.innerWidth;
     CONFIG.height = window.innerHeight;
-    render();
+    render(player1, player2, ctx, canvas);
 });
 
 // Game Objects
@@ -336,15 +312,6 @@ function startBattle(player) {
     gameLoop();
 }
 
-// Collision check of 2 rects
-function checkCollision(rect1, rect2) {
-    return (
-        rect1.x < rect2.x + rect2.width &&
-        rect1.x + rect1.width > rect2.x &&
-        rect1.y < rect2.y + rect2.height &&
-        rect1.y + rect1.height > rect2.y
-    );
-}
 
 // Game Loop
 function gameLoop() {
@@ -355,14 +322,14 @@ function gameLoop() {
 
     // Check for attacks
     if (player1.isAttacking) {
-        const attackBox = player1.getAttackBox();
-        if (checkCollision(attackBox, player2.getBodyBox())) {
+        const attackBox = getAttackBox(player1);
+        if (checkCollision(attackBox, getBodyBox(player2))) {
             player2.health -= player1.attack;
             player1.isAttacking = false;
         }
     } else if (player2.isAttacking) {
-        const attackBox = player2.getAttackBox();
-        if (checkCollision(attackBox, player1.getBodyBox())) {
+        const attackBox = getAttackBox(player2);
+        if (checkCollision(attackBox, getBodyBox(player1))) {
             player1.health -= player2.attack;
             player2.isAttacking = false;
         }
@@ -380,34 +347,24 @@ function gameLoop() {
         endBattle('p1');
     }
 
-    render();
+    render(player1, player2, ctx, canvas);
     requestAnimationFrame(gameLoop);
-}
-
-// Render
-function render() {
-    // Clear Canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // FUTURE OBJECTS WILL BE DRAWN HERE TODO:
-
-    // Draw Players
-    draw(player1, ctx);
-    draw(player2, ctx);
 }
 
 // End Battle
 function endBattle(reason) {
-    updateHealthBar('player1', player1);
-    updateHealthBar('player2', player2);
 
     clearInterval(timer);
     gameState.phase = 'gameover';
 
     let winner;
     if (reason === 'p1') {
+        player2.health = 0;
+        updateHealthBar('player2', player2);
         winner = 'Elon Musk wins!';
     } else if (reason === 'p2') {
+        player1.health = 0;
+        updateHealthBar('player1', player1);
         winner = 'Sam Altman wins!';
     } else {
         winner = 'It\'s a Draw!';
