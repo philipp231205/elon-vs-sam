@@ -21,6 +21,7 @@ window.addEventListener('resize', () => {
     canvas.height = window.innerHeight;
     CONFIG.width = window.innerWidth;
     CONFIG.height = window.innerHeight;
+    
     render(gameState.player1, gameState.player2, ctx, canvas);
 });
 
@@ -51,5 +52,5 @@ p1Selection.addEventListener('click', (event) => {
     const p = event.target.closest('.card');
     if (!p || !p1Selection.contains(p)) return;
 
-    startBattle(p.dataset.p1, CONFIG, gameState, keys, ctx, canvas);
+    startBattle(p.dataset.p1, keys, ctx, canvas);
 });

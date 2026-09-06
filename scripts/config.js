@@ -34,29 +34,30 @@ export const gameState = {
         player1: null,
         player2: null
     },
+    timer: null,
     timeRemaining: CONFIG.battleTime || 120,
     winner: null
 }
 
 // Character Class
 export class Character {
-    constructor(isAI, id, name, health, attack, speed, jump_power, aiDefaultDecisionCooldown, playerWidth, playerHeight) {
+    constructor(isAI, id, character) {
         this.isAI = isAI;
         this.id = id;
-        this.name = name;
-        this.health = health;
-        this.maxHealth = health;
-        this.attack = attack;
-        this.speed = speed;
-        this.jump_power = jump_power;
+        this.name = character.name;
+        this.health = character.health;
+        this.maxHealth = character.health;
+        this.attack = character.attack;
+        this.speed = character.speed;
+        this.jump_power = character.jump_power;
 
         this.x = 0;
         this.y = 0;
         this.width = window.innerWidth * 0.25; // SPRITE WIDTH
         this.height = window.innerHeight * 0.5; // SPRITE HEIGHT
 
-        this.playerWidth = playerWidth;
-        this.playerHeight = playerHeight;
+        this.playerWidth = CONFIG.playerwidth;
+        this.playerHeight = CONFIG.playerheight;
 
         this.velX = 0;
         this.velY = 0;
@@ -70,7 +71,7 @@ export class Character {
 
         // AI
         this.aiDecisionCooldown = 0;
-        this.aiDefaultDecisionCooldown = aiDefaultDecisionCooldown || 30;
+        this.aiDefaultDecisionCooldown = character.aiDefaultDecisionCooldown || 30;
         this.aiWalking = false;
         this.aiWalkTarget = 0;
         this.aiJumping = false;
