@@ -24,3 +24,13 @@ export const CONFIG = {
         }
     }
 }
+
+export const gameState = {
+    phase: 'selection', // 'selection', 'battle', 'gameover'
+    selections: {
+        player1: null,
+        player2: null
+    },
+    timeRemaining: CONFIG.battleTime || 120,
+    winner: null
+}

@@ -1,16 +1,23 @@
-import { CONFIG } from './config.js';
+import { CONFIG, gameState } from './config.js';
 
 // UI
 import { toggleSinglePlayer } from './ui/toggleSinglePlayer.js';
 import { updateHealthBar } from './ui/healthBar.js';
 
 // Graphics
-import { determineAnimation, updateAnimation } from './graphics/animation.js';
 import { render } from './graphics/draw.js';
 
 // Physics
 import { checkCollision } from './physics/collisions.js';
 import { getBodyBox, getAttackBox } from './physics/boxes.js';
+
+// Controls
+import { update } from './controls/playerControls.js';
+
+// AI
+import { updateAI } from './ai/ai.js';
+
+// Game Controller
 
 // Character Class
 class Character {
@@ -71,160 +78,6 @@ class Character {
         this.spriteSheet = new Image();
         this.spriteSheet.src = `assets/${this.name.toLowerCase().replace(' ', '')}.png`;
     }
-
-    // FUTURE: AI CAPABLITIES
-
-    update(opponent) {
-
-        this.velX = 0;
-
-        if (this.isAI) {
-            this.updateAI(opponent);
-        }
-
-        // Controls
-        if (!this.isAI && this.id == 1) {
-            if (keys['w'] && !this.isJumping) {
-                this.velY -= this.jump_power;
-                this.isJumping = true;
-            }
-            if (keys['a']) {
-                this.velX -= this.speed;
-                this.facingRight = false;
-            }
-            if (keys['d']) {
-                this.velX += this.speed;
-                this.facingRight = true;
-            }
-            if (keys[' ']) {
-                this.doAttack();
-            }
-        } else if (!this.isAI && this.id == 2) {
-            if (keys['ArrowUp'] && !this.isJumping) {
-                this.velY -= this.jump_power;
-                this.isJumping = true;
-            }
-            if (keys['ArrowLeft']) {
-                this.velX -= this.speed;
-                this.facingRight = false;
-            }
-            if (keys['ArrowRight']) {
-                this.velX += this.speed;
-                this.facingRight = true;
-            }
-            if (keys['Enter']) {
-                this.doAttack();
-            }
-        }
-
-        // Apply gravity
-        this.velY += CONFIG.gravity;
-
-        // Update position
-        this.x += this.velX;
-        this.y += this.velY;
-
-        // Boundary checks
-
-        if (this.y + this.playerHeight >= CONFIG.height) {
-            this.y = CONFIG.height - this.playerHeight;
-            this.isJumping = false;
-            this.velY = 0;
-        }
-
-        if (this.x < 0) this.x = 0;
-        if (this.x + this.playerWidth > CONFIG.width) this.x = CONFIG.width - this.playerWidth;
-    
-        // Attack cooldown
-        if (this.attackCooldown > 0) {
-            this.attackCooldown--;
-            if (this.isAttacking) this.attackAnimationTime++;
-        } else {
-            this.isAttacking = false;
-            this.attackAnimationTime = 0;
-        }
-
-        determineAnimation(this);
-        updateAnimation(this);
-    }
-
-    // AI Decisions
-    updateAI(opponent) {
-        const distanceToOpp = opponent.x - this.x;
-
-        if (this.aiDecisionCooldown <= 0) {
-            // AI walking towards opponent if far away, otherwise random movement
-            if (distanceToOpp > 50) {
-                this.aiWalking = true;
-                this.aiWalkTarget = opponent.x; // Walk right
-            } else if (distanceToOpp < -50) {
-                this.aiWalking = true;
-                this.aiWalkTarget = opponent.x; // Walk left
-            }
-
-            // Random jump
-            if (Math.random() < 0.01 && !this.isJumping) {
-                this.aiJumping = true;
-            }	
-
-            // Attack if close
-            if (Math.abs(distanceToOpp) < 60 && this.attackCooldown <= 0) {
-                this.aiAttacking = true;
-            }
-
-            this.aiDecisionCooldown = this.aiDefaultDecisionCooldown + Math.floor(Math.random() * 15); // New decision every 0.5-1 seconds
-        }
-
-        this.aiDecisionCooldown--;
-
-
-        // Perform actions based on decisions
-
-        if (this.aiWalking) {
-            if (distanceToOpp > 50) {
-                this.velX += this.speed;
-                this.facingRight = true;
-            } else if (distanceToOpp < -50) {
-                this.velX -= this.speed;
-                this.facingRight = false;
-            }
-
-            if (Math.abs(distanceToOpp) < 10) {
-                this.aiWalking = false; // Stop walking if close enough
-            }
-        }
-
-        if (this.aiJumping) {
-            this.velY -= this.jump_power;
-            this.isJumping = true;
-            this.aiJumping = false; // Reset jump decision
-        }
-
-        if (this.aiAttacking) {
-            this.doAttack();
-            this.aiAttacking = false; // Reset attack decision
-        }
-    }
-
-    // Sets attack state
-    doAttack() {
-        if (this.attackCooldown <= 0) {
-            this.isAttacking = true;
-            this.attackCooldown = 60; // Cooldown in frames
-        }
-    }
-}
-
-// Game State
-
-const gameState = {
-    phase: 'selection', // 'selection', 'battle', 'gameover'
-    selections: {
-        player1: null,
-        player2: null
-    },
-    timeRemaining: CONFIG.battleTime || 120,
-    winner: null
 }
 
 // Canvas setup
@@ -317,8 +170,8 @@ function startBattle(player) {
 function gameLoop() {
     if (gameState.phase !== 'battle') return;
 
-    player1.update(player2);
-    player2.update(player1);
+    update(player1, player2, CONFIG, keys);
+    update(player2, player1, CONFIG, keys);
 
     // Check for attacks
     if (player1.isAttacking) {
