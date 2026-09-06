@@ -36,7 +36,7 @@ window.addEventListener('keyup', (e) => {
 
 // Event handlers
 
-const playerSelection = document.querySelector('.SelectionScreen');
+const playerSelection = document.querySelector('.SelectionScreenTabBar');
 
 playerSelection.addEventListener('click', (event) => {
     const s = event.target.closest('.SelectionScreenTab');
@@ -45,23 +45,11 @@ playerSelection.addEventListener('click', (event) => {
     toggleSinglePlayer();
 });
 
-const chooseP1S = document.querySelector('#P1S');
-const chooseP2S = document.querySelector('#P2S');
-const chooseP1M = document.querySelector('#P1M');
-const chooseP2M = document.querySelector('#P2M');
+const p1Selection = document.querySelector('.SelectionScreen');
 
-chooseP1S.addEventListener('click', (event) => {
-    startBattle('Elon Musk', CONFIG, gameState, keys, ctx, canvas);
-});
+p1Selection.addEventListener('click', (event) => {
+    const p = event.target.closest('.card');
+    if (!p || !p1Selection.contains(p)) return;
 
-chooseP2S.addEventListener('click', (event) => {
-    startBattle('Sam Altman', CONFIG, gameState, keys, ctx, canvas);
-});
-
-chooseP1M.addEventListener('click', (event) => {
-    startBattle('Elon Musk', CONFIG, gameState, keys, ctx, canvas);
-});
-
-chooseP2M.addEventListener('click', (event) => {
-    startBattle('Sam Altman', CONFIG, gameState, keys, ctx, canvas);
+    startBattle(p.dataset.p1, CONFIG, gameState, keys, ctx, canvas);
 });
