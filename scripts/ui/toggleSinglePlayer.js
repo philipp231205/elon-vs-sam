@@ -1,6 +1,9 @@
-export function toggleSinglePlayer(singleplayer) {
-    if (singleplayer) {
-        singleplayer = false;
+import { gameState } from '../config.js';
+
+export function toggleSinglePlayer() {
+
+    if (gameState.singleplayer) {
+        gameState.singleplayer = false;
 
         document.getElementById('selection_singleplayer').style.display = 'none';
         document.getElementById('selection_multiplayer').style.display = 'inline-block';
@@ -13,10 +16,8 @@ export function toggleSinglePlayer(singleplayer) {
 
         selectionMultiplayer.style.color = "white";
         selectionMultiplayer.style.backgroundColor = "#333";
-
-        return singleplayer;
     } else {
-        singleplayer = true;
+        gameState.singleplayer = true;
 
         document.getElementById('selection_singleplayer').style.display = 'inline-block';
         document.getElementById('selection_multiplayer').style.display = 'none';
@@ -29,7 +30,5 @@ export function toggleSinglePlayer(singleplayer) {
 
         selectionMultiplayer.style.color = "#333";
         selectionMultiplayer.style.backgroundColor = "white";
-
-        return singleplayer;
     }
 }

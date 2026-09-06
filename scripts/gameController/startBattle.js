@@ -1,22 +1,20 @@
 import { Character } from '../config.js';
 import { gameLoop } from './gameLoop.js';
-
 import { endBattle } from './endBattle.js';
 
-// Start Battle
-
-export function startBattle(player, CONFIG, gameState, singleplayer, keys, ctx, canvas) {
+export function startBattle(player, CONFIG, gameState, keys, ctx, canvas) {
     document.getElementById('SelectionScreen').style.display = 'none';
     document.getElementById('hud').style.display = 'flex';
     document.getElementById('timer').textContent = CONFIG.battleTime;
 
     let idP1;
     let idP2;
-
     
-    let player1 = null;
-    let player2 = null;
+    let player1 = gameState.player1;
+    let player2 = gameState.player2;
     let timer = null;
+
+    let singleplayer = gameState.singleplayer;
 
     if (player === 'Elon Musk') {
         gameState.selections.player1 = 'Elon Musk';
