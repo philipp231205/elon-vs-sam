@@ -4,6 +4,7 @@ import { checkCollision } from "../physics/collisions.js";
 import { updateHealthBar } from "../ui/healthBar.js";
 import { render } from "../graphics/draw.js";
 import { CONFIG, gameState } from "../config.js";
+import { updateBullet } from "../controls/mechanics.js";
 
 import { endBattle } from "./endBattle.js";
 
@@ -28,6 +29,10 @@ export function gameLoop(keys, ctx, canvas) {
             gameState.player2.isAttacking = false;
         }
     }
+
+    gameState.bullets.forEach((item) => {
+        updateBullet(item);
+    });
 
     updateHealthBar('player1', gameState.player1);
     updateHealthBar('player2', gameState.player2);

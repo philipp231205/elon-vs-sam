@@ -56,7 +56,16 @@ function drawSprite(obj, ctx) {
     }
 }
 
-function drawBullet(obj) {
+function drawBullet(obj, ctx) {
+    ctx.save()
+
+    ctx.drawImage(
+        obj.sprite,
+        0, 0, obj.spriteSize, obj.spriteSize,
+        obj.x, obj.y, obj.spriteSize, obj.spriteSize
+    )
+
+    ctx.restore()
 }
 
 // Render
@@ -70,5 +79,7 @@ export function render(player1, player2, ctx, canvas, bullets) {
     draw(player1, ctx);
     draw(player2, ctx);
 
-    bullets.forEach(drawBullet);
+    bullets.forEach((item) => {
+        drawBullet(item, ctx);
+    });
 }
