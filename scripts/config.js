@@ -12,6 +12,7 @@ export const CONFIG = {
             attack: 17,
             speed: window.innerWidth / 220, // SPEED PARAMETER
             jump_power: window.innerHeight / 40, // JUMP POWER PARAMETER
+            shootingCooldown: 20,
             ai_decisionCooldown: 30
         },
         sam: {
@@ -20,6 +21,7 @@ export const CONFIG = {
             attack: 15,
             speed: window.innerWidth / 200, // SPEED PARAMETER
             jump_power: window.innerHeight / 35, // JUMP POWER PARAMETER
+            shootingCooldown: 15,
             ai_decisionCooldown: 50
         }
     }
@@ -36,7 +38,8 @@ export const gameState = {
     },
     timer: null,
     timeRemaining: CONFIG.battleTime || 120,
-    winner: null
+    winner: null,
+    bullets: new Array()
 }
 
 // Character Class
@@ -68,6 +71,10 @@ export class Character {
         this.attackAnimationTime = 0;
         this.hitStunTime = 0;
         this.facingRight = true;
+
+        // Shooting
+        this.shootingCooldown = character.shootingCooldown;
+        this.currentShootingCooldown = character.shootingCooldown;
 
         // AI
         this.aiDecisionCooldown = 0;

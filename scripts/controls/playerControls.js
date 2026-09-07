@@ -1,4 +1,4 @@
-import { doAttack } from '../controls/mechanics.js';
+import { doAttack, doShoot } from '../controls/mechanics.js';
 import { determineAnimation, updateAnimation } from '../graphics/animation.js';
 import { updateAI } from '../ai/ai.js';
 
@@ -27,6 +27,9 @@ export function update(obj, opponent, CONFIG, keys) {
         if (keys[' ']) {
             doAttack(obj);
         }
+        if (keys['e']) {
+            doShoot(obj);
+        }
     } else if (!obj.isAI && obj.id == 2) {
         if (keys['ArrowUp'] && !obj.isJumping) {
             obj.velY -= obj.jump_power;
@@ -42,6 +45,9 @@ export function update(obj, opponent, CONFIG, keys) {
         }
         if (keys['Enter']) {
             doAttack(obj);
+        }
+        if (keys['p']) {
+            doShoot(obj);
         }
     }
 
@@ -70,6 +76,11 @@ export function update(obj, opponent, CONFIG, keys) {
     } else {
         obj.isAttacking = false;
         obj.attackAnimationTime = 0;
+    }
+
+    // Shooting cooldown
+    if (obj.currentShootingCooldown > 0) {
+        obj.currentShootingCooldown--;
     }
 
     determineAnimation(obj);

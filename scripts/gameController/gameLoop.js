@@ -38,6 +38,6 @@ export function gameLoop(keys, ctx, canvas) {
     } else if (gameState.player2.health <= 0) {
         endBattle('p1', gameState, gameState.player1, gameState.player2);
     }
-    render(gameState.player1, gameState.player2, ctx, canvas);
+    render(gameState.player1, gameState.player2, ctx, canvas, gameState.bullets);
     requestAnimationFrame(() => gameLoop(keys, ctx, canvas));
 }

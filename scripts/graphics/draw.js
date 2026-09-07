@@ -56,8 +56,11 @@ function drawSprite(obj, ctx) {
     }
 }
 
+function drawBullet(obj) {
+}
+
 // Render
-export function render(player1, player2, ctx, canvas) {
+export function render(player1, player2, ctx, canvas, bullets) {
     // Clear Canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -66,4 +69,6 @@ export function render(player1, player2, ctx, canvas) {
     // Draw Players
     draw(player1, ctx);
     draw(player2, ctx);
+
+    bullets.forEach(drawBullet);
 }
