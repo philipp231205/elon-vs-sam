@@ -5,6 +5,7 @@ import { updateHealthBar } from "../ui/healthBar.js";
 import { render } from "../graphics/draw.js";
 import { CONFIG, gameState } from "../config.js";
 import { updateBullet } from "../controls/mechanics.js";
+import { shootingCooldownBar } from "../ui/shootingCooldownBar.js";
 
 import { endBattle } from "./endBattle.js";
 
@@ -43,6 +44,10 @@ export function gameLoop(keys, ctx, canvas) {
     } else if (gameState.player2.health <= 0) {
         endBattle('p1', gameState, gameState.player1, gameState.player2);
     }
+
+	shootingCooldownBar('player1', gameState.player1);
+	shootingCooldownBar('player2', gameState.player2);
+
     render(gameState.player1, gameState.player2, ctx, canvas, gameState.bullets);
     requestAnimationFrame(() => gameLoop(keys, ctx, canvas));
 }

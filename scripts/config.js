@@ -12,9 +12,11 @@ export const CONFIG = {
             attack: 17,
             speed: window.innerWidth / 220, // SPEED PARAMETER
             jump_power: window.innerHeight / 40, // JUMP POWER PARAMETER
-            shootingCooldown: 20,
+            shootingCooldown: 5,
             ai_decisionCooldown: 30,
-			bullet_damage: 20
+			bullet_damage: 20,
+			shootingCapacity: 10,
+			shootingReload: 100
         },
         sam: {
             name: 'Sam Altman',
@@ -22,9 +24,11 @@ export const CONFIG = {
             attack: 15,
             speed: window.innerWidth / 200, // SPEED PARAMETER
             jump_power: window.innerHeight / 35, // JUMP POWER PARAMETER
-            shootingCooldown: 15,
+            shootingCooldown: 5,
             ai_decisionCooldown: 50,
-			bullet_damage: 30
+			bullet_damage: 30,
+			shootingCapacity: 10,
+			shootingReload: 100
         }
     }
 }
@@ -78,6 +82,11 @@ export class Character {
         this.shootingCooldown = character.shootingCooldown;
         this.currentShootingCooldown = character.shootingCooldown;
 		this.bullet_damage = character.bullet_damage;
+
+		this.shootingCapacity = character.shootingCapacity;
+		this.currentShootingCapacity = character.shootingCapacity;
+		this.shootingReload = character.shootingReload;
+		this.currentShootingReload = character.shootingReload;
 
         // AI
         this.aiDecisionCooldown = 0;

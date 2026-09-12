@@ -139,6 +139,14 @@ body {
     width: 100%; /* Will be updated dynamically */
 }
 
+.player1-shootingCooldown, .player2-shootingCooldown {
+	height: 20px;
+    background: rgb(38, 228, 79);
+    border-radius: 5px;
+    margin-bottom: 10px;
+    width: 100%; /* Will be updated dynamically */
+}
+
 .timer {
     font-size: 5vh;
     color: white;

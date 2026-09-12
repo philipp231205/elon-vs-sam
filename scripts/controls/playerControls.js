@@ -83,6 +83,17 @@ export function update(obj, opponent, CONFIG, keys) {
         obj.currentShootingCooldown--;
     }
 
+	console.log(obj.currentShootingCapacity);
+
+	if (obj.currentShootingReload >= obj.shootingReload) {
+		obj.currentShootingReload = 0;
+		if (obj.currentShootingCapacity < obj.shootingCapacity) {
+			obj.currentShootingCapacity++;
+		}
+	} else {
+		obj.currentShootingReload++;
+	}
+
     determineAnimation(obj);
     updateAnimation(obj);
 }

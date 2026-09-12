@@ -10,10 +10,11 @@ export function doAttack(obj) {
 }
 
 export function doShoot(obj) {
-    if (obj.currentShootingCooldown <= 0) {
+    if (obj.currentShootingCooldown <= 0 && obj.currentShootingCapacity > 0) {
         let bullet = new Bullet(obj.x, obj.y, 7.5, obj.facingRight, obj.bullet_damage, (obj == gameState.player1) ? gameState.player2: gameState.player1);
         gameState.bullets.push(bullet);
         obj.currentShootingCooldown = obj.shootingCooldown;
+		obj.currentShootingCapacity--;
     }
 }
 
