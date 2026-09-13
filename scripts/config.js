@@ -95,6 +95,7 @@ export class Character {
         this.aiWalkTarget = 0;
         this.aiJumping = false;
         this.aiAttacking = false;
+		this.aiShooting = false;
 
 
         // Sprites

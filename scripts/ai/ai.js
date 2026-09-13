@@ -3,6 +3,7 @@ import { doAttack } from '../controls/mechanics.js';
 // AI Decisions
 export function updateAI(obj, opponent) {
     const distanceToOpp = opponent.x - obj.x;
+	const distanceY = opponent.y - obj.y;
 
     if (obj.aiDecisionCooldown <= 0) {
         // AI walking towards opponent if far away, otherwise random movement
@@ -14,15 +15,20 @@ export function updateAI(obj, opponent) {
             obj.aiWalkTarget = opponent.x; // Walk left
         }
 
-        // Random jump
-        if (Math.random() < 0.01 && !obj.isJumping) {
-            obj.aiJumping = true;
-        }	
+        // Jumping
+		if ((!obj.isJumping && distanceY < 0) || Math.random() < 0.05) {
+			console.log("test");
+			if (Math.random() < 0.75) {
+				obj.aiJumping = true;
+			}
+		}	
 
         // Attack if close
         if (Math.abs(distanceToOpp) < 60 && obj.attackCooldown <= 0) {
             obj.aiAttacking = true;
         }
+
+		// Shoot if similar height
 
         obj.aiDecisionCooldown = obj.aiDefaultDecisionCooldown + Math.floor(Math.random() * 15); // New decision every 0.5-1 seconds
     }
