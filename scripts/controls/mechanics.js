@@ -11,7 +11,7 @@ export function doAttack(obj) {
 
 export function doShoot(obj) {
     if (obj.currentShootingCooldown <= 0 && obj.currentShootingCapacity > 0) {
-        let bullet = new Bullet(obj.x, obj.y, 7.5, obj.facingRight, obj.bullet_damage, (obj == gameState.player1) ? gameState.player2: gameState.player1);
+        let bullet = new Bullet(obj.x, obj.y, 15, obj.facingRight, obj.bullet_damage, (obj == gameState.player1) ? gameState.player2: gameState.player1);
         gameState.bullets.push(bullet);
         obj.currentShootingCooldown = obj.shootingCooldown;
 		obj.currentShootingCapacity--;
@@ -39,13 +39,11 @@ export function updateBullet(obj) {
         gameState.bullets.splice(i, 1);
 
 	}  else {
-		// Else move the bullet in the specified direction
+		// Else move the bullet
 
-		if (obj.right) {
-			obj.x += obj.speed;
-		} else {
-			obj.x -= obj.speed;
-		}
+		obj.x += obj.speed;
+		obj.y += obj.ySpeed;
+		
 	}
 }
 
@@ -54,7 +52,11 @@ class Bullet {
         this.x = x;
         this.y = y;
         this.speed = speed;
-        this.right = right;
+		this.ySpeed = Math.random() * 2 - 1;
+
+		if (!right) {
+			this.speed = speed * -1;
+		}
 
         this.spriteSize = 20;
 		this.damage = damage;

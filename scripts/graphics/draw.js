@@ -62,7 +62,7 @@ function drawBullet(obj, ctx) {
     ctx.drawImage(
         obj.sprite,
         0, 0, obj.spriteSize, obj.spriteSize,
-        obj.x, obj.y, obj.spriteSize, obj.spriteSize
+        obj.x, obj.y, obj.spriteSize * 2, obj.spriteSize * 2
     )
 
     ctx.restore()
