@@ -1,8 +1,9 @@
 export const CONFIG = {
     width: window.innerWidth,
     height: window.innerHeight,
-    playerwidth: window.innerWidth * 0.1,
-    playerheight: window.innerHeight * 0.4,
+	v: window.innerHeight / 10,
+    playerwidth: null,
+    playerheight: null,
     battleTime: 120, // seconds
     gravity: 0.5,
     characters: {
@@ -38,6 +39,9 @@ export const gameState = {
     singleplayer: true, // True = Singeplayer, False = Multiplayer
     player1: null,
     player2: null,
+	canvas: null,
+	ctx: null,
+	keys: null,
     selections: {
         player1: null,
         player2: null

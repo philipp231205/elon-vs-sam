@@ -9,12 +9,21 @@ import { shootingCooldownBar } from "../ui/shootingCooldownBar.js";
 
 import { endBattle } from "./endBattle.js";
 
+let lastTime = 0;
+const frameIntervall = 100 / 60;
+
 // Game Loop
-export function gameLoop(keys, ctx, canvas) {
+export function gameLoop(time) {
+
     if (gameState.phase !== 'battle') return;
 
-    update(gameState.player1, gameState.player2, CONFIG, keys);
-    update(gameState.player2, gameState.player1, CONFIG, keys);
+	requestAnimationFrame(gameLoop);
+
+	if (time - lastTime < frameIntervall) return;
+	else lastTime = time - ((time - lastTime) % frameIntervall);
+
+    update(gameState.player1, gameState.player2, CONFIG, gameState.keys);
+    update(gameState.player2, gameState.player1, CONFIG, gameState.keys);
 
     // Check for attacks
     if (gameState.player1.isAttacking) {
@@ -48,6 +57,5 @@ export function gameLoop(keys, ctx, canvas) {
 	shootingCooldownBar('player1', gameState.player1);
 	shootingCooldownBar('player2', gameState.player2);
 
-    render(gameState.player1, gameState.player2, ctx, canvas, gameState.bullets);
-    requestAnimationFrame(() => gameLoop(keys, ctx, canvas));
+    render(gameState.player1, gameState.player2, gameState.ctx, gameState.canvas, gameState.bullets);
 }
