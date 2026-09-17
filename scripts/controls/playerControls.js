@@ -30,6 +30,11 @@ export function update(obj, opponent, CONFIG, keys) {
         if (keys['e']) {
             doShoot(obj);
         }
+		if (keys['q']) {
+            obj.isBlocking = true;
+        } else {
+			obj.isBlocking = false;
+		}
     } else if (!obj.isAI && obj.id == 2) {
         if (keys['ArrowUp'] && !obj.isJumping) {
             obj.velY -= obj.jump_power;
@@ -49,6 +54,11 @@ export function update(obj, opponent, CONFIG, keys) {
         if (keys['p']) {
             doShoot(obj);
         }
+		if (keys['l']) {
+            obj.isBlocking = true;
+        } else {
+			obj.isBlocking = false;
+		}
     }
 
     // Apply gravity

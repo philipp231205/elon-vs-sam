@@ -88,6 +88,9 @@ export class Character {
 		this.shootingReload = character.shootingReload;
 		this.currentShootingReload = character.shootingReload;
 
+		// Blocking
+		this.isBlocking = false;
+
         // AI
         this.aiDecisionCooldown = 0;
         this.aiDefaultDecisionCooldown = character.aiDefaultDecisionCooldown || 30;

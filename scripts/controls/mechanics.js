@@ -29,9 +29,9 @@ export function updateBullet(obj) {
 	} else if (checkCollision(obj, obj.target)) {
 		// Check for collision with target
 
-		if (obj.target == gameState.player1) {
+		if (obj.target == gameState.player1 && !gameState.player1.isBlocking) {
 			gameState.player1.health -= obj.damage;
-		} else if (obj.target == gameState.player2) {
+		} else if (obj.target == gameState.player2 && !gameState.player2.isBlocking) {
 			gameState.player2.health -= obj.damage;
 		}
 
