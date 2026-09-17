@@ -54,5 +54,5 @@ export function startBattle(player, keys, ctx, canvas) {
         }
     }, 1000);
 
-    gameLoop(keys, ctx, canvas);
+    requestAnimationFrame(gameLoop); // Start Game Loop
 }

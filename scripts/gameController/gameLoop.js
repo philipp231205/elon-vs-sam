@@ -10,7 +10,7 @@ import { shootingCooldownBar } from "../ui/shootingCooldownBar.js";
 import { endBattle } from "./endBattle.js";
 
 let lastTime = 0;
-const frameIntervall = 100 / 60;
+const frameIntervall = 1000 / CONFIG.fps;
 
 // Game Loop
 export function gameLoop(time) {
@@ -19,8 +19,11 @@ export function gameLoop(time) {
 
 	requestAnimationFrame(gameLoop);
 
-	if (time - lastTime < frameIntervall) return;
-	else lastTime = time - ((time - lastTime) % frameIntervall);
+	const deltaTime = time - lastTime;
+
+	if (deltaTime < frameIntervall) return;
+	
+	lastTime = time - (deltaTime % frameIntervall);
 
     update(gameState.player1, gameState.player2, CONFIG, gameState.keys);
     update(gameState.player2, gameState.player1, CONFIG, gameState.keys);

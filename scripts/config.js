@@ -1,4 +1,5 @@
 export const CONFIG = {
+	fps: 10,
     width: window.innerWidth,
     height: window.innerHeight,
 	v: window.innerHeight / 10,
