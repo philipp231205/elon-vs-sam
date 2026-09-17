@@ -30,11 +30,11 @@ export function startBattle(player, keys, ctx, canvas) {
 
     gameState.phase = 'battle';
     if (player === 'Elon Musk') {
-        gameState.player1 = new Character(false, idP1, CONFIG.characters.elon);
-        gameState.player2 = new Character(singleplayer, idP2, CONFIG.characters.sam);
+        gameState.player1 = new Character(false, idP1, CONFIG.characters.elon, CONFIG.fps);
+        gameState.player2 = new Character(singleplayer, idP2, CONFIG.characters.sam, CONFIG.fps);
     } else {
-        gameState.player1 = new Character(singleplayer, idP1, CONFIG.characters.elon);
-        gameState.player2 = new Character(false, idP2, CONFIG.characters.sam);
+        gameState.player1 = new Character(singleplayer, idP1, CONFIG.characters.elon, CONFIG.fps);
+        gameState.player2 = new Character(false, idP2, CONFIG.characters.sam, CONFIG.fps);
     }
 
     gameState.player1.x = CONFIG.width * 0.25 - gameState.player1.width / 2;

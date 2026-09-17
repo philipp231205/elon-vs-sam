@@ -1,10 +1,9 @@
 export const CONFIG = {
-	fps: 10,
+	fps: 60,
     width: window.innerWidth,
     height: window.innerHeight,
-	v: window.innerHeight / 10,
-    playerwidth: null,
-    playerheight: null,
+    playerwidth: window.innerWidth * 0.1,
+    playerheight: window.innerHeight * 0.4,
     battleTime: 120, // seconds
     gravity: 0.5,
     characters: {
@@ -12,7 +11,7 @@ export const CONFIG = {
             name: 'Elon Musk',
             health: 370,
             attack: 17,
-            speed: window.innerWidth / 220, // SPEED PARAMETER
+            speed: 3, // Seconds to cross map
             jump_power: window.innerHeight / 40, // JUMP POWER PARAMETER
             shootingCooldown: 5,
             ai_decisionCooldown: 30,
@@ -24,7 +23,7 @@ export const CONFIG = {
             name: 'Sam Altman',
             health: 350,
             attack: 15,
-            speed: window.innerWidth / 200, // SPEED PARAMETER
+            speed: 2.5, // Seconds to cross map
             jump_power: window.innerHeight / 35, // JUMP POWER PARAMETER
             shootingCooldown: 5,
             ai_decisionCooldown: 50,
@@ -55,14 +54,14 @@ export const gameState = {
 
 // Character Class
 export class Character {
-    constructor(isAI, id, character) {
+    constructor(isAI, id, character, fps) {
         this.isAI = isAI;
         this.id = id;
         this.name = character.name;
         this.health = character.health;
         this.maxHealth = character.health;
         this.attack = character.attack;
-        this.speed = character.speed;
+        this.speed = window.innerWidth / (character.speed * fps);
         this.jump_power = character.jump_power;
 
         this.x = 0;

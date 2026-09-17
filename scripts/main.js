@@ -15,11 +15,6 @@ const ctx = canvas.getContext('2d');
 canvas.width = CONFIG.width;
 canvas.height = CONFIG.height;
 
-// Set up CONFIG
-
-CONFIG.playerwidth = CONFIG.v;
-CONFIG.playerheight = CONFIG.v * 4;
-
 gameState.canvas = canvas;
 gameState.ctx = ctx;
 
