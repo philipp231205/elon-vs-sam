@@ -1,31 +1,35 @@
 # Requirements
 
-Elon vs. Sam is a browser game written in Javascript.
+Elon vs. Sam is a browser game written in JavaScript.
 
-## Game Design
+## Game Modes
 
-There are 2 modes: Singleplayer and Multiplayer
+### Singleplayer
 
-### Singeplayer
-
-The player chooses a character (Elon or Sam) and fights against an AI-controlled enemy.
+The player chooses Elon or Sam and fights against an AI-controlled opponent.
 
 ### Multiplayer
 
-Player 1 chooses a character, and fights against Player 2, who gets the character that wasn't picked by Player 1.
+Player 1 chooses Elon or Sam. Player 2 plays as the remaining character.
 
-### Control
+## Player Actions
 
-Walk: The Player can walk left or right.
+### Movement
 
-Jump: The Player can jump upwards.
+Players can walk left and right and jump upward.
 
-Melee: The Player can attack the other Player if it is in proximity. This deals damage to the other player, if he is within the hitbox.
+### Melee Attack
 
-Shooting: The Player can shoot objects in the direction he is pointing. If an object hits the other Player, it deals damage if this Player is currently not blocking.
+Players can perform a melee attack. The attack deals damage when the opponent is within its hitbox.
 
-Blocking: A Player can go into Block mode. In this mode, he can't receive damage by shooting. In Block mode, a Player can't move.
+### Shooting
 
-### End
+Players can fire projectiles in the direction they are facing. A projectile that hits the opponent deals damage unless the opponent is blocking.
 
-The Game is over as soon as one Player has 0 or less Hitpoints.
+### Blocking
+
+Players can enter a blocking state. While blocking, they cannot move and take no damage from projectiles.
+
+## Match End
+
+The match ends as soon as either player's hit points reach zero or below.
