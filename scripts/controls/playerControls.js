@@ -27,34 +27,34 @@ export function update(obj, opponent, CONFIG, keys) {
         if (keys[' '] && !obj.isBlocking) {
             doAttack(obj);
         }
-        if (keys['e'] && !obj.isBlocking) {
+        if (keys['Control'] && !obj.isBlocking) {
             doShoot(obj);
         }
-		if (keys['q']) {
+		if (keys['Shift']) {
             obj.isBlocking = true;
         } else {
 			obj.isBlocking = false;
 		}
     } else if (!obj.isAI && obj.id == 2) {
-        if (keys['ArrowUp'] && !obj.isJumping && !obj.isBlocking) {
+        if (keys['8'] && !obj.isJumping && !obj.isBlocking) {
             obj.velY -= obj.jump_power;
             obj.isJumping = obj;
         }
-        if (keys['ArrowLeft'] && !obj.isBlocking) {
+        if (keys['4'] && !obj.isBlocking) {
             obj.velX -= obj.speed;
             obj.facingRight = false;
         }
-        if (keys['ArrowRight'] && !obj.isBlocking) {
+        if (keys['6'] && !obj.isBlocking) {
             obj.velX += obj.speed;
             obj.facingRight = true;
         }
-        if (keys['Enter'] && !obj.isBlocking) {
+        if (keys['ArrowDown'] && !obj.isBlocking) {
             doAttack(obj);
         }
-        if (keys['p'] && !obj.isBlocking) {
+        if (keys['Enter'] && !obj.isBlocking) {
             doShoot(obj);
         }
-		if (keys['l']) {
+		if (keys['5']) {
             obj.isBlocking = true;
         } else {
 			obj.isBlocking = false;

@@ -13,9 +13,9 @@ export function determineAnimation(obj, keys) {
     // Priority system: higher priority animations override lower ones
 
     if (obj.id == 1) {
-        if (keys['q']) {
+        if (keys['Shift']) {
             setAnimation(obj, 'block');
-        } else if (keys['e']) {
+        } else if (keys['Control']) {
             setAnimation(obj, 'shoot');
         } else if (keys[' ']) {
             setAnimation(obj, 'attack');
@@ -27,15 +27,15 @@ export function determineAnimation(obj, keys) {
             setAnimation(obj, 'idle');
         }
     } else if (obj.id == 2) {
-        if (keys['l']) {
+        if (keys['5']) {
             setAnimation(obj, 'block');
-        } else if (keys['p']) {
-            setAnimation(obj, 'shoot');
         } else if (keys['Enter']) {
+            setAnimation(obj, 'shoot');
+        } else if (keys['ArrowDown']) {
             setAnimation(obj, 'attack');
-        } else if (keys['ArrowUp']) {
+        } else if (keys['8']) {
             setAnimation(obj, 'jump');
-        } else if (keys['ArrowLeft'] || keys['ArrowRight']) {
+        } else if (keys['4'] || keys['6']) {
             setAnimation(obj, 'walk');
         } else {
             setAnimation(obj, 'idle');
@@ -69,7 +69,7 @@ export class Anim {
 	constructor(x, y, path) {
 		this.x = x;
 		this.y = y;
-		this.frames = 40;
+		this.frames = 30;
 
         this.spriteSize = 192;
 		this.width = this.spriteSize;
