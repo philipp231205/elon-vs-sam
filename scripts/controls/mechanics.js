@@ -1,5 +1,6 @@
 import { CONFIG, gameState } from "../config.js";
 import { checkCollision } from "../physics/collisions.js";
+import { Anim, updateAnim } from "../graphics/animation.js";
 
 // Sets attack state
 export function doAttack(obj) {
@@ -23,10 +24,26 @@ export function updateBullet(obj) {
 	if (obj.x + obj.spriteSize <= 0 || obj.x >= CONFIG.width) {
 		// Check for Border collisions
 
+		console.log("Border Collision");
+
+		let x = 0;
+
+		if (obj.facingRight) {
+			x = obj.x + obj.width;
+		} else {
+			x = obj.x + obj.width / 2;
+		}
+
+		let anim = new Anim(x, obj.y, "assets/explosion.png");
+		gameState.anims.push(anim);
+
 		let i = gameState.bullets.indexOf(obj);
         gameState.bullets.splice(i, 1);
 
 	} else if (checkCollision(obj, obj.target)) {
+		let anim = new Anim(obj.x, obj.y, "assets/explosion.png");
+		gameState.anims.push(anim);
+
 		// Check for collision with target
 
 		if (obj.target == gameState.player1 && !gameState.player1.isBlocking) {
@@ -58,7 +75,7 @@ class Bullet {
 			this.speed = speed * -1;
 		}
 
-        this.spriteSize = 20;
+        this.spriteSize = 192;
 		this.damage = damage;
 
 		this.target = target;
@@ -67,6 +84,6 @@ class Bullet {
 		this.height = this.spriteSize;
 
         this.sprite = new Image();
-        this.sprite.src = 'assets/bullet.svg';
+        this.sprite.src = 'assets/fireball.png';
     }
 }

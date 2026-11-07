@@ -8,6 +8,7 @@ import { updateBullet } from "../controls/mechanics.js";
 import { shootingCooldownBar } from "../ui/shootingCooldownBar.js";
 
 import { endBattle } from "./endBattle.js";
+import { updateAnim } from "../graphics/animation.js";
 
 let lastTime = 0;
 const frameIntervall = 1000 / CONFIG.fps;
@@ -47,6 +48,10 @@ export function gameLoop(time) {
         updateBullet(item);
     });
 
+    gameState.anims.forEach((item) => {
+        updateAnim(item);
+    })
+
     updateHealthBar('player1', gameState.player1);
     updateHealthBar('player2', gameState.player2);
 
@@ -60,5 +65,5 @@ export function gameLoop(time) {
 	shootingCooldownBar('player1', gameState.player1);
 	shootingCooldownBar('player2', gameState.player2);
 
-    render(gameState.player1, gameState.player2, gameState.ctx, gameState.canvas, gameState.bullets);
+    render(gameState.player1, gameState.player2, gameState.ctx, gameState.canvas, gameState.bullets, gameState.anims);
 }

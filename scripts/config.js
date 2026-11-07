@@ -49,7 +49,8 @@ export const gameState = {
     timer: null,
     timeRemaining: CONFIG.battleTime || 120,
     winner: null,
-    bullets: new Array()
+    bullets: new Array(),
+    anims: new Array(),
 }
 
 // Character Class
@@ -113,14 +114,16 @@ export class Character {
         this.frameDelay = 5;
 
         this.animations = {
-            idle: { row: 0, frames: 8, loop: true },
-            walk: { row: 1, frames: 8, loop: true },
-            jump: { row: 2, frames: 8, loop: false },
-            attack: { row: 3, frames: 12, loop: false },
+            idle: { row: 0, frames: 6, loop: true },
+            walk: { row: 1, frames: 6, loop: true },
+            jump: { row: 2, frames: 6, loop: false },
+            attack: { row: 3, frames: 6, loop: true },
+            shoot: { row: 4, frames: 6, loop: true },
+            block: { row: 5, frames: 6, loop: true }
         };
         
-        this.spriteWidth = 256;
-        this.spriteHeight = 256;
+        this.spriteWidth = 192;
+        this.spriteHeight = 192;
 
         this.spriteSheet = new Image();
         this.spriteSheet.src = `assets/${this.name.toLowerCase().replace(' ', '')}.png`;

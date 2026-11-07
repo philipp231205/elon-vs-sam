@@ -102,6 +102,6 @@ export function update(obj, opponent, CONFIG, keys) {
 		obj.currentShootingReload++;
 	}
 
-    determineAnimation(obj);
+    determineAnimation(obj, keys);
     updateAnimation(obj);
 }

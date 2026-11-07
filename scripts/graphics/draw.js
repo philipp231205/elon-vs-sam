@@ -56,20 +56,20 @@ function drawSprite(obj, ctx) {
     }
 }
 
-function drawBullet(obj, ctx) {
-    ctx.save()
+function drawItem(obj, ctx) {
+    ctx.save();
 
     ctx.drawImage(
         obj.sprite,
         0, 0, obj.spriteSize, obj.spriteSize,
-        obj.x, obj.y, obj.spriteSize * 2, obj.spriteSize * 2
-    )
+        obj.x, obj.y, obj.spriteSize, obj.spriteSize
+    );
 
-    ctx.restore()
+    ctx.restore();
 }
 
 // Render
-export function render(player1, player2, ctx, canvas, bullets) {
+export function render(player1, player2, ctx, canvas, bullets, anims) {
     // Clear Canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -80,6 +80,11 @@ export function render(player1, player2, ctx, canvas, bullets) {
     draw(player2, ctx);
 
     bullets.forEach((item) => {
-        drawBullet(item, ctx);
+        drawItem(item, ctx);
+    });
+
+    anims.forEach((item) => {
+        console.log("Draw anmi");
+        drawItem(item, ctx);
     });
 }
