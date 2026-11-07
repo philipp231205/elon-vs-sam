@@ -28,7 +28,7 @@ Players can fire projectiles in the direction they are facing. A projectile that
 
 ### Blocking
 
-Players can enter a blocking state. While blocking, they cannot move and take no damage from projectiles.
+Players can enter a blocking state. While blocking, they cannot move, ajump, attack or shoot and take no damage from projectiles.
 
 ## Match End
 

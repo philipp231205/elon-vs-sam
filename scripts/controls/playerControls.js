@@ -12,22 +12,22 @@ export function update(obj, opponent, CONFIG, keys) {
 
     // Controls
     if (!obj.isAI && obj.id == 1) {
-        if (keys['w'] && !obj.isJumping) {
+        if (keys['w'] && !obj.isJumping && !obj.isBlocking) {
             obj.velY -= obj.jump_power;
             obj.isJumping = true;
         }
-        if (keys['a']) {
+        if (keys['a'] && !obj.isBlocking) {
             obj.velX -= obj.speed;
             obj.facingRight = false;
         }
-        if (keys['d']) {
+        if (keys['d'] && !obj.isBlocking) {
             obj.velX += obj.speed;
             obj.facingRight = true;
         }
-        if (keys[' ']) {
+        if (keys[' '] && !obj.isBlocking) {
             doAttack(obj);
         }
-        if (keys['e']) {
+        if (keys['e'] && !obj.isBlocking) {
             doShoot(obj);
         }
 		if (keys['q']) {
@@ -36,22 +36,22 @@ export function update(obj, opponent, CONFIG, keys) {
 			obj.isBlocking = false;
 		}
     } else if (!obj.isAI && obj.id == 2) {
-        if (keys['ArrowUp'] && !obj.isJumping) {
+        if (keys['ArrowUp'] && !obj.isJumping && !obj.isBlocking) {
             obj.velY -= obj.jump_power;
             obj.isJumping = obj;
         }
-        if (keys['ArrowLeft']) {
+        if (keys['ArrowLeft'] && !obj.isBlocking) {
             obj.velX -= obj.speed;
             obj.facingRight = false;
         }
-        if (keys['ArrowRight']) {
+        if (keys['ArrowRight'] && !obj.isBlocking) {
             obj.velX += obj.speed;
             obj.facingRight = true;
         }
-        if (keys['Enter']) {
+        if (keys['Enter'] && !obj.isBlocking) {
             doAttack(obj);
         }
-        if (keys['p']) {
+        if (keys['p'] && !obj.isBlocking) {
             doShoot(obj);
         }
 		if (keys['l']) {
