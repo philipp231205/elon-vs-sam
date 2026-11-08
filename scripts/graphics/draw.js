@@ -1,7 +1,7 @@
 function draw(obj, ctx) {
     ctx.save();
-    //ctx.fillStyle = this.name === 'Elon Musk' ? 'red' : 'blue'; // DEBUG
-    //ctx.fillRect(this.x, this.y, this.playerWidth, this.playerHeight); // DEBUG
+    ctx.fillStyle = obj.id == 1 ? 'red' : 'blue'; // DEBUG
+    ctx.fillRect(obj.x, obj.y, obj.playerWidth, obj.playerHeight); // DEBUG
 
     //let bodyOffset = this.playerWidth * 0.5; // DEBUG
     //if (!this.facingRight) {
@@ -58,6 +58,9 @@ function drawSprite(obj, ctx) {
 
 function drawItem(obj, ctx) {
     ctx.save();
+
+    ctx.fillStyle = 'green'; // DEBUG
+    ctx.fillRect(obj.x, obj.y, obj.playerWidth, obj.playerHeight); // DEBUG
 
     ctx.drawImage(
         obj.sprite,

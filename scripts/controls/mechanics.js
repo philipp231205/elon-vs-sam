@@ -29,9 +29,9 @@ export function updateBullet(obj) {
 		let x = 0;
 
 		if (obj.facingRight) {
-			x = obj.x + obj.width;
+			x = obj.x - obj.width;
 		} else {
-			x = obj.x + obj.width / 2;
+			x = obj.x + obj.width;
 		}
 
 		let anim = new Anim(x, obj.y, "assets/explosion.png");
@@ -82,6 +82,9 @@ class Bullet {
 
 		this.width = this.spriteSize;
 		this.height = this.spriteSize;
+
+		this.playerWidth = this.spriteSize;
+		this.playerHeight = this.spriteSize;
 
         this.sprite = new Image();
         this.sprite.src = 'assets/fireball.png';
