@@ -21,11 +21,13 @@ export function update(obj, opponent, CONFIG, keys) {
         if (keys['d']) {
             obj.isMovingRight = true;
         }
-        if (keys[' '] && !obj.isBlocking) {
-            doAttack(obj);
+        if (keys[' ']) { 
+            obj.isAttacking = true;
         }
-        if (keys['Control'] && !obj.isBlocking) {
-            doShoot(obj);
+        if (keys['Control']) {
+            obj.isShooting = true;
+        } else {
+            obj.isShooting = false;
         }
 		if (keys['Shift']) {
             obj.isBlocking = true;
@@ -42,11 +44,13 @@ export function update(obj, opponent, CONFIG, keys) {
         if (keys['6']) {
             obj.isMovingRight = true;
         }
-        if (keys['ArrowDown'] && !obj.isBlocking) {
-            doAttack(obj);
+        if (keys['ArrowDown']) {
+            obj.isAttacking = true;
         }
-        if (keys['Enter'] && !obj.isBlocking) {
-            doShoot(obj);
+        if (keys['Enter']) {
+            obj.isShooting = true;
+        } else {
+            obj.isShooting = false;
         }
 		if (keys['5']) {
             obj.isBlocking = true;
@@ -54,29 +58,6 @@ export function update(obj, opponent, CONFIG, keys) {
 			obj.isBlocking = false;
 		}
     }
-
-    // Attack cooldown
-    if (obj.attackCooldown > 0) {
-        obj.attackCooldown--;
-        if (obj.isAttacking) obj.attackAnimationTime++;
-    } else {
-        obj.isAttacking = false;
-        obj.attackAnimationTime = 0;
-    }
-
-    // Shooting cooldown
-    if (obj.currentShootingCooldown > 0) {
-        obj.currentShootingCooldown--;
-    }
-
-	if (obj.currentShootingReload >= obj.shootingReload) {
-		obj.currentShootingReload = 0;
-		if (obj.currentShootingCapacity < obj.shootingCapacity) {
-			obj.currentShootingCapacity++;
-		}
-	} else {
-		obj.currentShootingReload++;
-	}
 
     determineAnimation(obj, keys);
     updateAnimation(obj);

@@ -1,3 +1,5 @@
+import { doAttack, doShoot } from "./controls/mechanics.js";
+
 export const CONFIG = {
 	fps: 60,
     width: window.innerWidth,
@@ -79,14 +81,13 @@ export class Character {
         this.isJumping = false;
         this.isAttacking = false;
         this.attackCooldown = 0;
-        this.attackAnimationTime = 0;
-        this.hitStunTime = 0;
         this.facingRight = true;
 
         this.isMovingRight = false;
         this.isMovingLeft = false;
 
         // Shooting
+        this.isShooting = false;
         this.shootingCooldown = character.shootingCooldown;
         this.currentShootingCooldown = character.shootingCooldown;
 		this.bullet_damage = character.bullet_damage;
@@ -177,5 +178,44 @@ export class Character {
         // Update position
         this.x += this.velX;
         this.y += this.velY;
+
+        // Attacking
+        if (this.isAttacking) {
+            if (this.isBlocking) {
+                this.isAttacking = false;
+            } else {
+                doAttack(this);
+            }
+        }
+
+        // Attack cooldown
+        if (this.attackCooldown > 0) {
+            this.attackCooldown--;
+        } else {
+            this.isAttacking = false;
+        }
+
+        // Shooting
+        if (this.isShooting) {
+            if (this.isBlocking) {
+                this.isShooting = false;
+            } else {
+                doShoot(this);
+            }
+        }
+
+        // Shooting cooldown
+        if (this.currentShootingCooldown > 0) {
+            this.currentShootingCooldown--;
+        }
+
+        if (this.currentShootingReload >= this.shootingReload) {
+            this.currentShootingReload = 0;
+            if (this.currentShootingCapacity < this.shootingCapacity) {
+                this.currentShootingCapacity++;
+            }
+        } else {
+            this.currentShootingReload++;
+        }
     }
 }
