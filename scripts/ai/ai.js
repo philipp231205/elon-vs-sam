@@ -1,65 +1,58 @@
-import { doAttack } from '../controls/mechanics.js';
+import { doAttack, doShoot } from '../controls/mechanics.js';
 
 // AI Decisions
 export function updateAI(obj, opponent) {
-    const distanceToOpp = opponent.x - obj.x;
-	const distanceY = opponent.y - obj.y;
+    obj.isBlocking = false;
+    let aiDecision = 0; // 1: Walk left; 2: Walk right; 3: Jump; 4: Attack; 5: Shoot; 6: Block;
 
-    if (obj.aiDecisionCooldown <= 0) {
-        // AI walking towards opponent if far away, otherwise random movement
-        if (distanceToOpp > 50) {
-            obj.aiWalking = true;
-            obj.aiWalkTarget = opponent.x; // Walk right
-        } else if (distanceToOpp < -50) {
-            obj.aiWalking = true;
-            obj.aiWalkTarget = opponent.x; // Walk left
+    let distanceToOpp = obj.x - opponent.x;
+    if (distanceToOpp < 0 ) { distanceToOpp = distanceToOpp * -1};
+
+    let prob = [40, 20, 20, 20, 20, 20, 20];
+
+    // Game Rules, modify for updates in AI
+
+
+    // Blocking Rules
+
+    if (opponent.currentShootingCooldown > 0) {prob[6] += 20};
+    if (distanceToOpp < 50) {prob[6] -= 20}
+
+
+    let sum = 0;
+    prob.forEach(item => {
+        sum += item;
+    });
+
+    let r = Math.random() * sum;
+
+    for (let i = 0; i < prob.length; i++) {
+        r -= prob[i];
+
+        if (r <= 0) {
+            aiDecision = i;
+            break;
         }
-
-        // Jumping
-		if ((!obj.isJumping && distanceY < 0) || Math.random() < 0.05) {
-			console.log("test");
-			if (Math.random() < 0.75) {
-				obj.aiJumping = true;
-			}
-		}	
-
-        // Attack if close
-        if (Math.abs(distanceToOpp) < 60 && obj.attackCooldown <= 0) {
-            obj.aiAttacking = true;
-        }
-
-		// Shoot if similar height
-
-        obj.aiDecisionCooldown = obj.aiDefaultDecisionCooldown + Math.floor(Math.random() * 15); // New decision every 0.5-1 seconds
     }
 
-    obj.aiDecisionCooldown--;
-
+    console.log(aiDecision);
 
     // Perform actions based on decisions
 
-    if (obj.aiWalking) {
-        if (distanceToOpp > 50) {
-            obj.velX += obj.speed;
-            obj.facingRight = true;
-        } else if (distanceToOpp < -50) {
-            obj.velX -= obj.speed;
-            obj.facingRight = false;
-        }
-
-        if (Math.abs(distanceToOpp) < 10) {
-            obj.aiWalking = false; // Stop walking if close enough
-        }
-    }
-
-    if (obj.aiJumping) {
+    if (aiDecision == 1) {
+        obj.facingRight = false;
+        obj.velX += obj.speed;
+    } else if (aiDecision == 2) {
+        obj.facingRight = true;
+        obj.velX -= obj.speed;
+    } else if (aiDecision == 3 && isJumping == false) {
         obj.velY -= obj.jump_power;
         obj.isJumping = true;
-        obj.aiJumping = false; // Reset jump decision
-    }
-
-    if (obj.aiAttacking) {
+    } else if (aiDecision == 4) {
         doAttack(obj);
-        obj.aiAttacking = false; // Reset attack decision
-    }
+    } else if (aiDecision == 5) {
+        doShoot(obj);
+    } else if (aiDecision == 6) {
+        obj.isBlocking = true;
+    };
 }

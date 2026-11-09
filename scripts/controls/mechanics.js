@@ -24,8 +24,6 @@ export function updateBullet(obj) {
 	if (obj.x + obj.spriteSize <= 0 || obj.x >= CONFIG.width) {
 		// Check for Border collisions
 
-		console.log("Border Collision");
-
 		let x = 0;
 
 		if (obj.facingRight) {

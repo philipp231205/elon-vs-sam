@@ -83,6 +83,9 @@ export class Character {
         this.hitStunTime = 0;
         this.facingRight = true;
 
+        this.isMovingRight = false;
+        this.isMovingLeft = false;
+
         // Shooting
         this.shootingCooldown = character.shootingCooldown;
         this.currentShootingCooldown = character.shootingCooldown;
@@ -127,5 +130,52 @@ export class Character {
 
         this.spriteSheet = new Image();
         this.spriteSheet.src = `assets/${this.name.toLowerCase().replace(' ', '')}.png`;
+    }
+
+    updatePlayer()  {
+
+        // Moving
+        // Reset Speed as it should only apply when button pressed
+        this.velX = 0;
+
+        // Apply speed
+        if (this.isMovingRight && !this.isBlocking) {
+            this.facingRight = true;
+            this.velX += this.speed;
+            this.isMovingRight = false;
+        } else if (this.isMovingLeft && !this.isBlocking) {
+            this.facingRight = false;
+            this.velX -= this.speed;
+            this.isMovingLeft = false;
+        }
+
+        // Check Boundaries
+        if (this.x < 0) this.x = 0;
+        if (this.x + this.playerWidth > CONFIG.width) this.x = CONFIG.width - this.playerWidth;
+
+        // Jumping
+        // Check jumping
+
+        if (this.y + this.playerHeight > CONFIG.height) {
+            this.y = CONFIG.height - this.playerHeight;
+            this.isJumping = false;
+            this.velY = 0;
+            console.log("test");
+        }
+
+        // Update Jumping
+        // If Player is Jumping, apply gravity, else apply jump power to vertical speed
+
+        if (this.isJumping && !this.isBlocking) {
+            if (this.velY == 0) {
+                this.velY -= this.jump_power;
+            } else {
+                this.velY += CONFIG.gravity;
+            }   
+        }
+
+        // Update position
+        this.x += this.velX;
+        this.y += this.velY;
     }
 }

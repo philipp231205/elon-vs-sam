@@ -87,7 +87,6 @@ export function render(player1, player2, ctx, canvas, bullets, anims) {
     });
 
     anims.forEach((item) => {
-        console.log("Draw anmi");
         drawItem(item, ctx);
     });
 }

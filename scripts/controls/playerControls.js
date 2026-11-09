@@ -4,7 +4,7 @@ import { updateAI } from '../ai/ai.js';
 
 export function update(obj, opponent, CONFIG, keys) {
 
-    obj.velX = 0;
+    obj.updatePlayer();
 
     if (obj.isAI) {
         updateAI(obj, opponent);
@@ -12,17 +12,14 @@ export function update(obj, opponent, CONFIG, keys) {
 
     // Controls
     if (!obj.isAI && obj.id == 1) {
-        if (keys['w'] && !obj.isJumping && !obj.isBlocking) {
-            obj.velY -= obj.jump_power;
+        if (keys['w']) {
             obj.isJumping = true;
         }
-        if (keys['a'] && !obj.isBlocking) {
-            obj.velX -= obj.speed;
-            obj.facingRight = false;
+        if (keys['a']) {
+            obj.isMovingLeft = true;
         }
-        if (keys['d'] && !obj.isBlocking) {
-            obj.velX += obj.speed;
-            obj.facingRight = true;
+        if (keys['d']) {
+            obj.isMovingRight = true;
         }
         if (keys[' '] && !obj.isBlocking) {
             doAttack(obj);
@@ -36,17 +33,14 @@ export function update(obj, opponent, CONFIG, keys) {
 			obj.isBlocking = false;
 		}
     } else if (!obj.isAI && obj.id == 2) {
-        if (keys['8'] && !obj.isJumping && !obj.isBlocking) {
-            obj.velY -= obj.jump_power;
-            obj.isJumping = obj;
+        if (keys['8']) {
+            obj.isJumping = true;
         }
-        if (keys['4'] && !obj.isBlocking) {
-            obj.velX -= obj.speed;
-            obj.facingRight = false;
+        if (keys['4']) {
+            obj.isMovingLeft = true;
         }
-        if (keys['6'] && !obj.isBlocking) {
-            obj.velX += obj.speed;
-            obj.facingRight = true;
+        if (keys['6']) {
+            obj.isMovingRight = true;
         }
         if (keys['ArrowDown'] && !obj.isBlocking) {
             doAttack(obj);
@@ -60,24 +54,6 @@ export function update(obj, opponent, CONFIG, keys) {
 			obj.isBlocking = false;
 		}
     }
-
-    // Apply gravity
-    obj.velY += CONFIG.gravity;
-
-    // Update position
-    obj.x += obj.velX;
-    obj.y += obj.velY;
-
-    // Boundary checks
-
-    if (obj.y + obj.playerHeight >= CONFIG.height) {
-        obj.y = CONFIG.height - obj.playerHeight;
-        obj.isJumping = false;
-        obj.velY = 0;
-    }
-
-    if (obj.x < 0) obj.x = 0;
-    if (obj.x + obj.playerWidth > CONFIG.width) obj.x = CONFIG.width - obj.playerWidth;
 
     // Attack cooldown
     if (obj.attackCooldown > 0) {
