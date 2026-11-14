@@ -1,5 +1,5 @@
 function draw(obj, ctx) {
-    //ctx.save();
+    ctx.save();
     //ctx.fillStyle = obj.id == 1 ? 'red' : 'blue'; // DEBUG
     //ctx.fillRect(obj.x, obj.y, obj.playerWidth, obj.playerHeight); // DEBUG
 

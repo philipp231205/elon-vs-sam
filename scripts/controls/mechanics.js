@@ -61,10 +61,6 @@ class Bullet {
         this.speed = speed;
 		this.ySpeed = Math.random() * 2 - 1;
 
-		if (!right) {
-			this.speed = speed * -1;
-		}
-
         this.spriteSize = 192;
 		this.damage = damage;
 
@@ -77,6 +73,12 @@ class Bullet {
 		this.playerHeight = this.spriteSize;
 
         this.sprite = new Image();
-        this.sprite.src = 'assets/fireball.png';
+
+		if (!right) {
+			this.speed = speed * -1;
+			this.sprite.src = 'assets/fireball_left.png';
+		} else {
+			this.sprite.src = 'assets/fireball.png';
+		}
     }
 }
