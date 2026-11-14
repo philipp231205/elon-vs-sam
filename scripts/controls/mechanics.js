@@ -1,13 +1,6 @@
 import { CONFIG, gameState } from "../config.js";
 import { checkCollision } from "../physics/collisions.js";
-import { Anim, updateAnim } from "../graphics/animation.js";
-
-// Sets attack state
-export function doAttack(obj) {
-    if (obj.attackCooldown <= 0) {
-        obj.attackCooldown = 60; // Cooldown in frames
-    }
-}
+import { Anim } from "../graphics/animation.js";
 
 export function doShoot(obj) {
     if (obj.currentShootingCooldown <= 0 && obj.currentShootingCapacity > 0) {

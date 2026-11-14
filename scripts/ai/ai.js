@@ -1,4 +1,4 @@
-import { doAttack, doShoot } from '../controls/mechanics.js';
+import { doShoot } from '../controls/mechanics.js';
 
 // AI Decisions
 export function updateAI(obj, opponent) {
@@ -51,7 +51,7 @@ export function updateAI(obj, opponent) {
     } else if (aiDecision == 4) {
         doAttack(obj);
     } else if (aiDecision == 5) {
-        doShoot(obj);
+        obj.isAttacking = true;
     } else if (aiDecision == 6) {
         obj.isBlocking = true;
     };

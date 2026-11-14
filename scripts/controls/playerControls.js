@@ -1,4 +1,3 @@
-import { doAttack, doShoot } from '../controls/mechanics.js';
 import { determineAnimation, updateAnimation } from '../graphics/animation.js';
 import { updateAI } from '../ai/ai.js';
 
@@ -21,7 +20,7 @@ export function update(obj, opponent, CONFIG, keys) {
         if (keys['d']) {
             obj.isMovingRight = true;
         }
-        if (keys[' ']) { 
+        if (keys[' ']) {
             obj.isAttacking = true;
         }
         if (keys['Control']) {

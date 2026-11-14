@@ -59,8 +59,8 @@ function drawSprite(obj, ctx) {
 function drawItem(obj, ctx) {
     ctx.save();
 
-    ctx.fillStyle = 'green'; // DEBUG
-    ctx.fillRect(obj.x, obj.y, obj.playerWidth, obj.playerHeight); // DEBUG
+    //ctx.fillStyle = 'green'; // DEBUG
+    //ctx.fillRect(obj.x, obj.y, obj.playerWidth, obj.playerHeight); // DEBUG
 
     ctx.drawImage(
         obj.sprite,

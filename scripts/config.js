@@ -1,4 +1,4 @@
-import { doAttack, doShoot } from "./controls/mechanics.js";
+import { doShoot } from "./controls/mechanics.js";
 
 export const CONFIG = {
 	fps: 60,
@@ -178,21 +178,20 @@ export class Character {
         this.x += this.velX;
         this.y += this.velY;
 
-        // Attacking
-        if (this.isAttacking) {
-            if (this.isBlocking) {
-                this.isAttacking = false;
-            } else {
-                doAttack(this);
-            }
-        }
+		// Attacking
+		if (this.isAttacking && !this.isBlocking) {
+			if (this.attackCooldown <= 0) {
+				this.attackCooldown = 60;
+			} else if (this.attackCooldown > 0) {
+				this.attackCooldown--;
+			}
 
-        // Attack cooldown
-        if (this.attackCooldown > 0) {
-            this.attackCooldown--;
-        } else {
-            this.isAttacking = false;
-        }
+			if (this.attackCooldown == 0) {
+				this.isAttacking = false;
+			}
+		} else {
+			this.isAttacking = false;
+		}
 
         // Shooting
         if (this.isShooting) {

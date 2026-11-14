@@ -9,6 +9,7 @@ import { shootingCooldownBar } from "../ui/shootingCooldownBar.js";
 
 import { endBattle } from "./endBattle.js";
 import { updateAnim } from "../graphics/animation.js";
+import { Anim } from "../graphics/animation.js";
 
 let lastTime = 0;
 const frameIntervall = 1000 / CONFIG.fps;
@@ -30,17 +31,19 @@ export function gameLoop(time) {
     update(gameState.player2, gameState.player1, CONFIG, gameState.keys);
 
     // Check for attacks
-    if (gameState.player1.isAttacking) {
+    if (gameState.player1.isAttacking && gameState.player1.attackCooldown <= 0) {
         const attackBox = getAttackBox(gameState.player1);
         if (checkCollision(attackBox, getBodyBox(gameState.player2))) {
+			let anim = new Anim(attackBox.x, attackBox.y, "assets/dust.png");
+			gameState.anims.push(anim);
             gameState.player2.health -= gameState.player1.attack;
-            gameState.player1.isAttacking = false;
         }
-    } else if (gameState.player2.isAttacking) {
+    } else if (gameState.player2.isAttacking && gameState.player2.attackCooldown <= 0) {
         const attackBox = getAttackBox(gameState.player2);
         if (checkCollision(attackBox, getBodyBox(gameState.player1))) {
+			let anim = new Anim(attackBox.x, attackBox.y, "assets/dust.png");
+			gameState.anims.push(anim);
             gameState.player1.health -= gameState.player2.attack;
-            gameState.player2.isAttacking = false;
         }
     }
 
