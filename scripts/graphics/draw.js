@@ -1,7 +1,7 @@
 function draw(obj, ctx) {
-    ctx.save();
-    ctx.fillStyle = obj.id == 1 ? 'red' : 'blue'; // DEBUG
-    ctx.fillRect(obj.x, obj.y, obj.playerWidth, obj.playerHeight); // DEBUG
+    //ctx.save();
+    //ctx.fillStyle = obj.id == 1 ? 'red' : 'blue'; // DEBUG
+    //ctx.fillRect(obj.x, obj.y, obj.playerWidth, obj.playerHeight); // DEBUG
 
     //let bodyOffset = this.playerWidth * 0.5; // DEBUG
     //if (!this.facingRight) {

@@ -4,7 +4,7 @@ import { endBattle } from './endBattle.js';
 
 import { CONFIG, gameState } from "../config.js";
 
-export function startBattle(player, keys, ctx, canvas) {
+export function startBattle(player) {
     document.getElementById('SelectionScreen').style.display = 'none';
     document.getElementById('hud').style.display = 'flex';
     document.getElementById('timer').textContent = CONFIG.battleTime;
@@ -38,10 +38,10 @@ export function startBattle(player, keys, ctx, canvas) {
     }
 
     gameState.player1.x = CONFIG.width * 0.25 - gameState.player1.width / 2;
-    gameState.player1.y = CONFIG.height - gameState.player1.height;
+    gameState.player1.y = CONFIG.height - gameState.player1.playerHeight;
 
     gameState.player2.x = CONFIG.width * 0.75 - gameState.player2.width / 2;
-    gameState.player2.y = CONFIG.height - gameState.player2.height;
+    gameState.player2.y = CONFIG.height - gameState.player2.playerHeight;
 
     // Start Timer
 

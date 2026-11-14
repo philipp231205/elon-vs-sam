@@ -161,14 +161,13 @@ export class Character {
             this.y = CONFIG.height - this.playerHeight;
             this.isJumping = false;
             this.velY = 0;
-            console.log("test");
         }
 
         // Update Jumping
         // If Player is Jumping, apply gravity, else apply jump power to vertical speed
 
         if (this.isJumping && !this.isBlocking) {
-            if (this.velY == 0) {
+            if (this.velY == 0 && !(this.y + this.playerHeight < CONFIG.height)) {
                 this.velY -= this.jump_power;
             } else {
                 this.velY += CONFIG.gravity;
