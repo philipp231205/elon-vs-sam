@@ -1,13 +1,15 @@
-import { determineAnimation, updateAnimation } from '../graphics/animation.js';
+import { determineAnimation, setAnimation, updateAnimation } from '../graphics/animation.js';
 import { updateAI } from '../ai/ai.js';
 
-export function update(obj, opponent, CONFIG, keys) {
+export function update(obj, opponent, keys) {
 
     obj.updatePlayer();
 
     if (obj.isAI) {
         updateAI(obj, opponent);
+		return;
     }
+
 
     // Controls
     if (!obj.isAI && obj.id == 1) {
@@ -23,12 +25,12 @@ export function update(obj, opponent, CONFIG, keys) {
         if (keys[' ']) {
             obj.isAttacking = true;
         }
-        if (keys['Control']) {
+        if (keys['<']) {
             obj.isShooting = true;
         } else {
             obj.isShooting = false;
         }
-		if (keys['Shift']) {
+		if (keys['s'] || keys['S']) {
             obj.isBlocking = true;
         } else {
 			obj.isBlocking = false;

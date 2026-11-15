@@ -101,13 +101,14 @@ export class Character {
 		this.isBlocking = false;
 
         // AI
-        this.aiDecisionCooldown = 0;
-        this.aiDefaultDecisionCooldown = character.aiDefaultDecisionCooldown || 30;
-        this.aiWalking = false;
-        this.aiWalkTarget = 0;
-        this.aiJumping = false;
-        this.aiAttacking = false;
+		this.ai_maxDecisionCooldown = 6;
+		this.ai_decisionCooldown = 6;
+		this.aiWalkingLeft = false;
+		this.aiWalkingRight = false;
+		this.aiJumping = false;
+		this.aiAttacking = false;
 		this.aiShooting = false;
+		this.aiBlocking = false;
 
 
         // Sprites
@@ -166,8 +167,8 @@ export class Character {
         // Update Jumping
         // If Player is Jumping, apply gravity, else apply jump power to vertical speed
 
-        if (this.isJumping && !this.isBlocking) {
-            if (this.velY == 0 && !(this.y + this.playerHeight < CONFIG.height)) {
+        if (this.isJumping) {
+            if (this.velY == 0 && !(this.y + this.playerHeight < CONFIG.height) && !this.isBlocking) {
                 this.velY -= this.jump_power;
             } else {
                 this.velY += CONFIG.gravity;

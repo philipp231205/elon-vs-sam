@@ -44,9 +44,6 @@ gameState.keys = keys;
 
 const playerSelection = document.querySelector('.SelectionScreenTabBar');
 
-const contPanelSingle = document.getElementById('controls-single');
-const contPanelMutli = document.getElementById('controls-multi');
-
 playerSelection.addEventListener('click', (event) => {
     const s = event.target.closest('.SelectionScreenTab');
     if (!s || !playerSelection.contains(s)) return;

@@ -4,7 +4,8 @@ import { endBattle } from './endBattle.js';
 
 import { CONFIG, gameState } from "../config.js";
 
-export function startBattle(player) {
+export async function startBattle(player) {
+
     document.getElementById('SelectionScreen').style.display = 'none';
 	document.getElementById('ControlPanel').style.display = 'none';
     document.getElementById('hud').style.display = 'flex';

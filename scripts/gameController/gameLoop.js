@@ -27,8 +27,8 @@ export function gameLoop(time) {
 	
 	lastTime = time - (deltaTime % frameIntervall);
 
-    update(gameState.player1, gameState.player2, CONFIG, gameState.keys);
-    update(gameState.player2, gameState.player1, CONFIG, gameState.keys);
+    update(gameState.player1, gameState.player2, gameState.keys);
+    update(gameState.player2, gameState.player1, gameState.keys);
 
     // Check for attacks
     if (gameState.player1.isAttacking && gameState.player1.attackCooldown <= 0) {

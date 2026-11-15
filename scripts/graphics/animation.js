@@ -1,6 +1,6 @@
 import { gameState } from "../config.js";
 
-function setAnimation(obj, animationName) {
+export function setAnimation(obj, animationName) {
     // Only change if it's a different animation
     if (obj.currentAnimation !== animationName && obj.animations[animationName]) {
         obj.currentAnimation = animationName;
@@ -13,9 +13,9 @@ export function determineAnimation(obj, keys) {
     // Priority system: higher priority animations override lower ones
 
     if (obj.id == 1) {
-        if (keys['Shift']) {
+        if (keys['s']) {
             setAnimation(obj, 'block');
-        } else if (keys['Control']) {
+        } else if (keys['<']) {
             setAnimation(obj, 'shoot');
         } else if (keys[' ']) {
             setAnimation(obj, 'attack');
