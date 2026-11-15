@@ -6,6 +6,7 @@ import { CONFIG, gameState } from "../config.js";
 
 export function startBattle(player) {
     document.getElementById('SelectionScreen').style.display = 'none';
+	document.getElementById('ControlPanel').style.display = 'none';
     document.getElementById('hud').style.display = 'flex';
     document.getElementById('timer').textContent = CONFIG.battleTime;
 
