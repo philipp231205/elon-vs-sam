@@ -13,7 +13,7 @@ export function doShoot(obj) {
 
 export function updateBullet(obj) {
 
-	if (obj.x + obj.spriteSize <= 0 || obj.x >= CONFIG.width) {
+	if (obj.x + (obj.playerWidth / 2) <= 0 || obj.x + (obj.playerWidth / 2) >= CONFIG.width) {
 		// Check for Border collisions
 
 		let x = 0;
@@ -24,14 +24,14 @@ export function updateBullet(obj) {
 			x = obj.x + obj.width;
 		}
 
-		let anim = new Anim(x, obj.y, "assets/explosion.png");
+		let anim = new Anim(obj.x, obj.y, "assets/explosion.png");
 		gameState.anims.push(anim);
 
 		let i = gameState.bullets.indexOf(obj);
         gameState.bullets.splice(i, 1);
 
 	} else if (checkCollision(obj, obj.target)) {
-		let anim = new Anim(obj.x, obj.y, "assets/explosion.png");
+		let anim = new Anim(obj.x + (obj.right ? obj.playerWidth: -obj.playerWidth), obj.y, "assets/explosion.png");
 		gameState.anims.push(anim);
 
 		// Check for collision with target
@@ -60,6 +60,7 @@ class Bullet {
         this.y = y;
         this.speed = speed;
 		this.ySpeed = Math.random() * 2 - 1;
+		this.right = right;
 
         this.spriteSize = 192;
 		this.damage = damage;
