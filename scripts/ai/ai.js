@@ -30,19 +30,19 @@ export function updateAI(obj, opponent) {
     // Game Rules, modify for updates in AI
 
 	// Walking left rules
-	if (-distanceToOpp < -obj.playerWidth) { prob[1] += 150};
-	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[1] -= 20};
+	if (distanceToOpp > obj.playerWidth) { prob[1] += 150};
+	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[1] = 20};
 
 	// Walking right rules
-	if (distanceToOpp > obj.playerWidth) { prob[2] += 150};
-	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[2] -= 20};
+	if (distanceToOpp < -obj.playerWidth) { prob[2] += 150};
+	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[2] = 20};
 
 	// Jumping rules
 	if (opponent.isJumping) { prob[3] += 140};
 	if (distanceToOpp < obj.playerWidth || -distanceToOpp > -obj.playerWidth) { prob[3] -= 30};
 
 	// Attacking rules
-	if (distanceToOpp < obj.playerWidth || -distanceToOpp > -obj.playerWidth) { prob[4] += 150 };
+	if (distanceToOpp < obj.playerWidth || distanceToOpp > -obj.playerWidth) { prob[4] += 150 };
 	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[4] -= 30};
 
 	// Shooting rules

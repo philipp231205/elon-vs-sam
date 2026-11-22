@@ -13,7 +13,7 @@ export function update(obj, opponent, keys) {
 
 
     // Controls
-    if (!obj.isAI && obj.id == 1) {
+    if (obj.id == 1) {
         if (keys['w']) {
             obj.isJumping = true;
         }
@@ -36,7 +36,7 @@ export function update(obj, opponent, keys) {
         } else {
 			obj.isBlocking = false;
 		}
-    } else if (!obj.isAI && obj.id == 2) {
+    } else if (obj.id == 2) {
         if (keys['8']) {
             obj.isJumping = true;
         }
