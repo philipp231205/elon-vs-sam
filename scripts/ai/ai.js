@@ -20,7 +20,9 @@ export function updateAI(obj, opponent) {
 	obj.aiWalkingLeft = false;
 	obj.aiWalkingRight = false;
 
-    obj.isBlocking = false;
+	console.log(obj.velX);
+
+    obj.aiBlocking = false;
     let aiDecision = 0; // 1: Walk left; 2: Walk right; 3: Jump; 4: Attack; 5: Shoot; 6: Block;
 
     let distanceToOpp = obj.x - opponent.x;
@@ -31,11 +33,11 @@ export function updateAI(obj, opponent) {
 
 	// Walking left rules
 	if (distanceToOpp > obj.playerWidth) { prob[1] += 150};
-	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[1] = 20};
+	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[1] -= 20};
 
 	// Walking right rules
 	if (distanceToOpp < -obj.playerWidth) { prob[2] += 150};
-	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[2] = 20};
+	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[2] -= 20};
 
 	// Jumping rules
 	if (opponent.isJumping) { prob[3] += 140};
