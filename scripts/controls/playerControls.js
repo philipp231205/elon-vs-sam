@@ -8,7 +8,7 @@ export function update(obj, opponent, keys) {
     if (obj.isAI) {
         updateAI(obj, opponent);
 		return;
-    }
+    };
 
 
     // Controls

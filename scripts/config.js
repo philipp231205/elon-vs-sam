@@ -101,8 +101,8 @@ export class Character {
 		this.isBlocking = false;
 
         // AI
-		this.ai_maxDecisionCooldown = 6;
-		this.ai_decisionCooldown = 6;
+		this.ai_maxDecisionCooldown = 10;
+		this.ai_decisionCooldown = 10;
 		this.aiWalkingLeft = false;
 		this.aiWalkingRight = false;
 		this.aiJumping = false;

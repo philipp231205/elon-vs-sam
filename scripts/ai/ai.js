@@ -17,6 +17,9 @@ export function updateAI(obj, opponent) {
 
 	obj.ai_decisionCooldown = obj.ai_maxDecisionCooldown;
 
+	obj.aiWalkingLeft = false;
+	obj.aiWalkingRight = false;
+
     obj.isBlocking = false;
     let aiDecision = 0; // 1: Walk left; 2: Walk right; 3: Jump; 4: Attack; 5: Shoot; 6: Block;
 
@@ -26,15 +29,29 @@ export function updateAI(obj, opponent) {
 
     // Game Rules, modify for updates in AI
 
-	// Walking rules
-	if (distanceToOpp > 75) {prob[1] += distanceToOpp};
-	if (distanceToOpp < 75) {prob[2] -= distanceToOpp}; 
+	// Walking left rules
+	if (-distanceToOpp < -obj.playerWidth) { prob[1] += 150};
+	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[1] -= 20};
 
+	// Walking right rules
+	if (distanceToOpp > obj.playerWidth) { prob[2] += 150};
+	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[2] -= 20};
 
-    // Shooting Rules
+	// Jumping rules
+	if (opponent.isJumping) { prob[3] += 140};
+	if (distanceToOpp < obj.playerWidth || -distanceToOpp > -obj.playerWidth) { prob[3] -= 30};
 
-    if (opponent.currentShootingCooldown > 0) {prob[6] += 20};
-    if (distanceToOpp < 50) {prob[6] -= 20}
+	// Attacking rules
+	if (distanceToOpp < obj.playerWidth || -distanceToOpp > -obj.playerWidth) { prob[4] += 150 };
+	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[4] -= 30};
+
+	// Shooting rules
+	if (obj.currentShootingCapacity >= (obj.shootingCapacity / 2)) { prob[5] += 150};
+	if (opponent.isBlocking) { prob[5] -= 70}
+
+	// Blocking rules
+	if (opponent.isShooting) { prob[6] += 150};
+	if (distanceToOpp < obj.playerWidth || -distanceToOpp > -obj.playerWidth) { prob[6] -= 30};
 
 
     let sum = 0;
@@ -82,6 +99,8 @@ export function updateAI(obj, opponent) {
     } else {
 		setAnimation(obj, 'idle');
 	}
+
+	console.log(aiDecision);
 
 	updateAnimation(obj);
 }
