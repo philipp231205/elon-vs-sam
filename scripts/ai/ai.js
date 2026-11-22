@@ -99,8 +99,4 @@ export function updateAI(obj, opponent) {
     } else {
 		setAnimation(obj, 'idle');
 	}
-
-	console.log(aiDecision);
-
-	updateAnimation(obj);
 }
