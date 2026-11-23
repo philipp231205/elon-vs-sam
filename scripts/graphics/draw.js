@@ -1,7 +1,7 @@
 function draw(obj, ctx) {
     ctx.save();
-    //ctx.fillStyle = this.name === 'Elon Musk' ? 'red' : 'blue'; // DEBUG
-    //ctx.fillRect(this.x, this.y, this.playerWidth, this.playerHeight); // DEBUG
+    //ctx.fillStyle = obj.id == 1 ? 'red' : 'blue'; // DEBUG
+    //ctx.fillRect(obj.x, obj.y, obj.playerWidth, obj.playerHeight); // DEBUG
 
     //let bodyOffset = this.playerWidth * 0.5; // DEBUG
     //if (!this.facingRight) {
@@ -56,20 +56,23 @@ function drawSprite(obj, ctx) {
     }
 }
 
-function drawBullet(obj, ctx) {
-    ctx.save()
+function drawItem(obj, ctx) {
+    ctx.save();
+
+    //ctx.fillStyle = 'green'; // DEBUG
+    //ctx.fillRect(obj.x, obj.y, obj.playerWidth, obj.playerHeight); // DEBUG
 
     ctx.drawImage(
         obj.sprite,
         0, 0, obj.spriteSize, obj.spriteSize,
         obj.x, obj.y, obj.spriteSize, obj.spriteSize
-    )
+    );
 
-    ctx.restore()
+    ctx.restore();
 }
 
 // Render
-export function render(player1, player2, ctx, canvas, bullets) {
+export function render(player1, player2, ctx, canvas, bullets, anims) {
     // Clear Canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -80,6 +83,10 @@ export function render(player1, player2, ctx, canvas, bullets) {
     draw(player2, ctx);
 
     bullets.forEach((item) => {
-        drawBullet(item, ctx);
+        drawItem(item, ctx);
+    });
+
+    anims.forEach((item) => {
+        drawItem(item, ctx);
     });
 }

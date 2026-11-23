@@ -13,6 +13,21 @@
 	<body>
 
 		<div id = "gameContainer">
+			<!--Control Panel-->
+			<div class="ControlPanel" id="ControlPanel">
+				<h2 c lass="card-h2">Controls</h2>
+				<p class="selection-controls" id="controls-single">
+				WAD (Move/Jump)<br>SPACE (Melee)<br>
+				S: Block<br><: Shoot
+				</p>
+				<p class="selection-controls" id="controls-multi" style="display:none;">
+				<span class="player_wrap">Player 1</span><br>WAD (Move/Jump)<br>SPACE (Melee)<br>
+				S: Block<br><: Shoot<br><br>
+				<span class="player_wrap">Player 2</span><br>4,8,5 (Move/Jump)<br>ArrowDown (Melee)<br>
+				5: Block<br>Enter: Shoot
+				</p>
+			</div>
+
 			<!-- Character Selection Screen-->
 			<div class="SelectionScreen" id ="SelectionScreen">
 
@@ -41,9 +56,6 @@
 							<h2 class = "card-h2">Sam Altman</h2>
 						</div>
 					</div>
-					<p class = "selection-controls">
-					WASD (Move/Jump) | SPACE (Melee)
-					</p>
 				</div>
 
 				<div id="selection_multiplayer" style="display:none">
@@ -60,10 +72,6 @@
 							<h2 class = "card-h2">Sam Altman</h2>
 						</div>
 					</div>
-					<p class = "selection-controls">
-					Player 1: WASD (Move/Jump) | SPACE (Melee) <br>
-					Player 2: Arrows (Move/Jump) | ENTER (Melee)
-					</p>
 				</div>
 			</div>
 
@@ -72,6 +80,7 @@
 			<div id="hud" class="hud">
 				<div class="player1-hud"> <!-- Health Container-->
 					<div class="player1-health" id="player1-health"></div>
+					<div class="player1-shootingCooldown" id="player1-shootingCooldown"></div>
 					<p class="player1-name">Elon Musk</p>
 				</div>
 
@@ -79,6 +88,7 @@
 
 				<div class="player2-hud"> <!-- Health Container-->
 					<div class="player2-health" id="player2-health"></div>
+					<div class="player2-shootingCooldown" id="player2-shootingCooldown"></div>
 					<p class="player2-name">Sam Altman</p>
 				</div>
 			</div>

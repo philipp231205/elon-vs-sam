@@ -15,6 +15,9 @@ const ctx = canvas.getContext('2d');
 canvas.width = CONFIG.width;
 canvas.height = CONFIG.height;
 
+gameState.canvas = canvas;
+gameState.ctx = ctx;
+
 // Resizing
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
@@ -34,6 +37,8 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => {
     keys[e.key] = false;
 });
+
+gameState.keys = keys;
 
 // Event handlers
 

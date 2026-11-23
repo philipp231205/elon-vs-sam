@@ -5,34 +5,55 @@ import { updateHealthBar } from "../ui/healthBar.js";
 import { render } from "../graphics/draw.js";
 import { CONFIG, gameState } from "../config.js";
 import { updateBullet } from "../controls/mechanics.js";
+import { shootingCooldownBar } from "../ui/shootingCooldownBar.js";
 
 import { endBattle } from "./endBattle.js";
+import { updateAnim } from "../graphics/animation.js";
+import { Anim } from "../graphics/animation.js";
+
+let lastTime = 0;
+const frameIntervall = 1000 / CONFIG.fps;
 
 // Game Loop
-export function gameLoop(keys, ctx, canvas) {
+export function gameLoop(time) {
+
     if (gameState.phase !== 'battle') return;
 
-    update(gameState.player1, gameState.player2, CONFIG, keys);
-    update(gameState.player2, gameState.player1, CONFIG, keys);
+	requestAnimationFrame(gameLoop);
+
+	const deltaTime = time - lastTime;
+
+	if (deltaTime < frameIntervall) return;
+	
+	lastTime = time - (deltaTime % frameIntervall);
+
+    update(gameState.player1, gameState.player2, gameState.keys);
+    update(gameState.player2, gameState.player1, gameState.keys);
 
     // Check for attacks
-    if (gameState.player1.isAttacking) {
+    if (gameState.player1.isAttacking && gameState.player1.attackCooldown <= 0) {
         const attackBox = getAttackBox(gameState.player1);
         if (checkCollision(attackBox, getBodyBox(gameState.player2))) {
+			let anim = new Anim(attackBox.x, attackBox.y, "assets/dust.png");
+			gameState.anims.push(anim);
             gameState.player2.health -= gameState.player1.attack;
-            gameState.player1.isAttacking = false;
         }
-    } else if (gameState.player2.isAttacking) {
+    } else if (gameState.player2.isAttacking && gameState.player2.attackCooldown <= 0) {
         const attackBox = getAttackBox(gameState.player2);
         if (checkCollision(attackBox, getBodyBox(gameState.player1))) {
+			let anim = new Anim(attackBox.x, attackBox.y, "assets/dust.png");
+			gameState.anims.push(anim);
             gameState.player1.health -= gameState.player2.attack;
-            gameState.player2.isAttacking = false;
         }
     }
 
     gameState.bullets.forEach((item) => {
         updateBullet(item);
     });
+
+    gameState.anims.forEach((item) => {
+        updateAnim(item);
+    })
 
     updateHealthBar('player1', gameState.player1);
     updateHealthBar('player2', gameState.player2);
@@ -43,6 +64,9 @@ export function gameLoop(keys, ctx, canvas) {
     } else if (gameState.player2.health <= 0) {
         endBattle('p1', gameState, gameState.player1, gameState.player2);
     }
-    render(gameState.player1, gameState.player2, ctx, canvas, gameState.bullets);
-    requestAnimationFrame(() => gameLoop(keys, ctx, canvas));
+
+	shootingCooldownBar('player1', gameState.player1);
+	shootingCooldownBar('player2', gameState.player2);
+
+    render(gameState.player1, gameState.player2, gameState.ctx, gameState.canvas, gameState.bullets, gameState.anims);
 }

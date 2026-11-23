@@ -3,8 +3,8 @@ export function getBodyBox(obj) {
     return {
         x: obj.x,
         y: obj.y,
-        width: obj.playerWidth,
-        height: obj.playerHeight
+        playerWidth: obj.playerWidth,
+        playerHeight: obj.playerHeight
     };
 }
 
@@ -21,7 +21,7 @@ export function getAttackBox(obj) {
     return {
         x: obj.x + bodyOffset,
         y: boxY,
-        width: attackWidth,
-        height: boxH
+        playerWidth: attackWidth,
+        playerHeight: boxH
     };
 }
