@@ -1,23 +1,7 @@
 function draw(obj, ctx) {
     ctx.save();
-    //ctx.fillStyle = obj.id == 1 ? 'red' : 'blue'; // DEBUG
-    //ctx.fillRect(obj.x, obj.y, obj.playerWidth, obj.playerHeight); // DEBUG
 
-    //let bodyOffset = this.playerWidth * 0.5; // DEBUG
-    //if (!this.facingRight) {
-    //	bodyOffset = -bodyOffset;
-    //}
-
-    //ctx.fillStyle = this.name === 'Elon Musk' ? 'green' : 'yellow'; // DEBUG
-    //ctx.fillRect(this.x + bodyOffset, this.y, this.playerWidth, this.playerHeight * 0.5); // DEBUG
-
-    drawSprite(obj, ctx);
-
-    ctx.restore();
-}
-
-function drawSprite(obj, ctx) {
-    const anim = obj.animations[obj.currentAnimation];
+	const anim = obj.animations[obj.currentAnimation];
     if (!anim) return;
     
     // Calculate source position in sprite sheet
@@ -54,13 +38,12 @@ function drawSprite(obj, ctx) {
             middlexbody - middlexsprite, middleybody - middleysprite, obj.width, obj.height                  // Destination
         );
     }
+
+    ctx.restore();
 }
 
 function drawItem(obj, ctx) {
     ctx.save();
-
-    //ctx.fillStyle = 'green'; // DEBUG
-    //ctx.fillRect(obj.x, obj.y, obj.playerWidth, obj.playerHeight); // DEBUG
 
     ctx.drawImage(
         obj.sprite,
@@ -75,8 +58,6 @@ function drawItem(obj, ctx) {
 export function render(player1, player2, ctx, canvas, bullets, anims) {
     // Clear Canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // FUTURE OBJECTS WILL BE DRAWN HERE TODO:
 
     // Draw Players
     draw(player1, ctx);

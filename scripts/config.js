@@ -112,7 +112,6 @@ export class Character {
 
 
         // Sprites
-        this.spriteSheet = null;
         this.currentAnimation = 'idle';
         this.currentFrame = 0;
         this.frameTimer = 0;
