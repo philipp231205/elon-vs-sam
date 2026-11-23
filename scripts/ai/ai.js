@@ -73,31 +73,38 @@ export function updateAI(obj, opponent) {
 
     // Perform actions based on decisions
 
-    if (aiDecision == 1) {
-        obj.isMovingLeft = true;
-		obj.aiWalkingLeft = true;
-		setAnimation(obj, 'walk');
-    } else if (aiDecision == 2) {
-        obj.isMovingRight = true;
-		obj.aiWalkingRight = true;
-		setAnimation(obj, 'walk');
-    } else if (aiDecision == 3) {
-        obj.isJumping = true;
-		obj.aiJumping = true;
-		setAnimation(obj, 'jump');
-    } else if (aiDecision == 4) {
-        obj.isAttacking = true;
-		obj.aiAttacking = true;
-		setAnimation(obj, 'attack');
-    } else if (aiDecision == 5) {
-        obj.isShooting = true;
-		obj.aiShooting = true;
-		setAnimation(obj, 'shoot');
-    } else if (aiDecision == 6) {
-        obj.isBlocking = true;
-		obj.aiBlocking = true;
-		setAnimation(obj, 'block');
-    } else {
-		setAnimation(obj, 'idle');
+	switch(aiDecision) {
+		case 1:
+			obj.isMovingLeft = true;
+			obj.aiWalkingLeft = true;
+			setAnimation(obj, 'walk');
+			break;
+		case 2:
+			obj.isMovingRight = true;
+			obj.aiWalkingRight = true;
+			setAnimation(obj, 'walk');
+			break;
+		case 3:
+			obj.isJumping = true;
+			obj.aiJumping = true;
+			setAnimation(obj, 'jump');
+			break;
+		case 4:
+			obj.isAttacking = true;
+			obj.aiAttacking = true;
+			setAnimation(obj, 'attack');
+			break;
+		case 5:
+			obj.isShooting = true;
+			obj.aiShooting = true;
+			setAnimation(obj, 'shoot');
+			break;
+		case 6:
+			obj.isBlocking = true;
+			obj.aiBlocking = true;
+			setAnimation(obj, 'block');
+			break;
+		default:
+			setAnimation(obj, 'idle');
 	}
 }

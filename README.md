@@ -1,4 +1,4 @@
-# Elon vs Sam: A 2d pixel fighting game: elon-vs-sam.io
+# Elon vs Sam: A 2D Pixel Browser fighting Game: elon-vs-sam.io
 
 ![Elon vs Sam gameplay](docs/gameplay.png)
 
@@ -9,7 +9,9 @@ Singeplayer: Play alone vs an AI controlled enemy
 Multiplayer: Play locally on the same device against another person
 
 
-**Running it locally**: Clone the repo and open index.html in your browser
+## Running it locally:
+
+Clone the repo and open index.html in your browser
 
 ## What I learned
 

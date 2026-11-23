@@ -58,15 +58,15 @@ export function gameLoop(time) {
     updateHealthBar('player1', gameState.player1);
     updateHealthBar('player2', gameState.player2);
 
+	shootingCooldownBar('player1', gameState.player1);
+	shootingCooldownBar('player2', gameState.player2);
+
     // Check for end conditions
     if (gameState.player1.health <= 0) {
         endBattle('p2', gameState, gameState.player1, gameState.player2);
     } else if (gameState.player2.health <= 0) {
         endBattle('p1', gameState, gameState.player1, gameState.player2);
     }
-
-	shootingCooldownBar('player1', gameState.player1);
-	shootingCooldownBar('player2', gameState.player2);
 
     render(gameState.player1, gameState.player2, gameState.ctx, gameState.canvas, gameState.bullets, gameState.anims);
 }
