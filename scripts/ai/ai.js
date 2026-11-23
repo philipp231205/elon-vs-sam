@@ -6,7 +6,6 @@ export function updateAI(obj, opponent) {
 	if (obj.ai_decisionCooldown > 0) {
 		obj.isMovingLeft = obj.aiWalkingLeft;
 		obj.isMovingRight = obj.aiWalkingRight;
-		obj.isJumping = obj.aiJumping;
 		obj.isAttacking = obj.aiAttacking;
 		obj.isShooting = obj.aiShooting;
 		obj.isBlocking = obj.aiBlocking;
